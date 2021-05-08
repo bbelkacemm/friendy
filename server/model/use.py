@@ -1,14 +1,46 @@
 import random
-import json
 import pickle
 import nltk
 import numpy as np
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
+from server.database.models import *
 
 ERROR_THRESHOLD = 0.25
 
 lemmatizer = WordNetLemmatizer()
+
+
+def get_label(lang, context):
+    """
+    :param lang: label's language
+    :param context: Context object
+    :return: context's label based on the specified language
+    """
+    label = None
+    if lang == 'en':
+        label = context.label_en
+    if lang == 'fr':
+        label = context.label_fr
+    if lang == 'ar':
+        label = context.label_ar
+    return label
+
+
+def get_proposition(lang, context):
+    """
+    :param lang: proposition's language
+    :param context: Context object
+    :return: context's proposition based on the specified language
+    """
+    proposition = None
+    if lang == 'en':
+        proposition = context.proposition_en
+    if lang == 'fr':
+        proposition = context.proposition_fr
+    if lang == 'ar':
+        proposition = context.proposition_ar
+    return proposition
 
 
 def predict_class(user_input, model, words, classes):
@@ -46,17 +78,15 @@ def predict_class(user_input, model, words, classes):
 
 def generate_response(user_input, lang):
     """
-    Loads model/data based on the user's preferred language,
+    Loads model/data based on the user's preferred language from the database,
     call @predict_class function,
-    generate a response randomly using the 'tag' related to the highest probability.
+    generate a response randomly using the 'label' related to the highest probability.
 
     :param user_input: the user's message
     :param lang: the language chosen by the user
     :return: an object containing the response and the recommended prepositions
     """
     # LOAD NECESSARY DATA
-    data = json.loads(open(f'model/data/database_{lang}.json').read())
-    groups = json.loads(open(f'model/data/groups_{lang}.json').read())
     words = pickle.load(open(f'model/output/words_{lang}.pkl', 'rb'))
     classes = pickle.load(open(f'model/output/classes_{lang}.pkl', 'rb'))
     # LOAD MODEL
@@ -64,25 +94,14 @@ def generate_response(user_input, lang):
     # PREDICT CLASS
     predictions = predict_class(user_input, model, words, classes)
     response = 'Error'
-    code = ''
-    for item in data:
-        if item['tag'] == predictions[0]['class']:
-            response = random.choice(item['responses'])
-            code = item['code']
-            break
-
-    group = None
-    for item in groups:
-        if item['code'] == code:
-            group = item
-
     next_contexts = []
-    for item in groups:
-        if group:
-            if item['code'] in group['to']:
-                next_contexts.append(item)
+    for context in Context.query.all():
+        if get_label(lang=lang, context=context) == predictions[0]['class']:
+            responses = list(filter(lambda x: x.language == lang, context.responses))
+            response = random.choice(responses).label
+            next_contexts = context.contexts
 
     return {
         'response': response,
-        'propositions': list(map(lambda x: x['proposition'], next_contexts))
+        'propositions': list(map(lambda x: get_proposition(lang=lang, context=x), next_contexts))
     }

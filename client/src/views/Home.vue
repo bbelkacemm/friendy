@@ -1,0 +1,109 @@
+<template>
+    <v-container fluid v-if="user" class="fill-height">
+        <div id="chat-bot-container" class="fill-height elevation-4">
+            <div id="messages-container">
+                <template v-for="(item, index) in messages">
+                    <message :key="index" :value="item.value" :sender="item.sender"/>
+                </template>
+            </div>
+            <div id="propositions-container">
+                <template v-for="(item, index) in propositions">
+                    <proposition v-on:clicked="send($event)" class="proposition-item" :value="item" :key="index"/>
+                </template>
+            </div>
+            <v-form v-on:submit.prevent="" ref="form" id="input-grid" class="ma-2">
+                <div>
+                    <v-text-field v-model="message" hide-details="true" dense solo flat background-color="transparent"
+                                  outline="false"></v-text-field>
+                </div>
+                <div>
+                    <v-btn icon tile @click="validateSend" color="#291720">
+                        <v-icon>mdi-send</v-icon>
+                    </v-btn>
+                </div>
+            </v-form>
+        </div>
+    </v-container>
+    <v-container v-else>
+        <div class="title font-weight-bold text-center ma-10">
+            Welcome!
+        </div>
+    </v-container>
+</template>
+
+<script>
+import Proposition from '@/components/Proposition'
+import Message from '@/components/Message'
+import { get } from '@/helpers/HTTPHelper'
+import { mapActions, mapGetters } from 'vuex'
+
+export default {
+    name: 'Home',
+    components: { Message, Proposition },
+    data: function () {
+        return {
+            message: null,
+        }
+    },
+    computed: {
+        ...mapGetters('messages', ['messages']),
+        ...mapGetters('propositions', ['propositions']),
+    },
+    methods: {
+        validateSend: async function () {
+            if (this.$refs.form.validate()) {
+                await this.send(this.message)
+            }
+            this.message = null
+        },
+        send: async function (message) {
+            this.addMessage({
+                'value': message,
+                'sender': true,
+            })
+            const response = await get('/', {
+                'lang': 'en',
+                'user-input': message,
+            })
+            if (response !== 'responseError') {
+                this.addMessage({
+                    'value': response.response,
+                })
+                this.setPropositions(response.propositions)
+            }
+        },
+        ...mapActions('messages', ['addMessage']),
+        ...mapActions('propositions', ['setPropositions']),
+    },
+}
+</script>
+
+<style scoped lang="sass">
+
+#chat-bot-container
+    margin-left: 150px
+    margin-right: 150px
+    width: 100%
+    display: grid
+    grid-template-rows: 1fr auto auto
+
+#input-grid
+    display: grid
+    grid-template-columns: 1fr auto
+    align-items: center
+
+#propositions-container
+    display: flex
+    justify-content: center
+    align-items: center
+
+#propositions-container .proposition-item
+    display: inline-block
+
+#messages-container
+    overflow-y: auto
+
+.v-text-field
+    background-color: rgba(0, 0, 0, 0.05)
+
+</style>

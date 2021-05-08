@@ -1,13 +1,13 @@
 import random
 import string
-import json
 import pickle
 import numpy as np
 import nltk
+from server.database.models import *
 from nltk.stem import WordNetLemmatizer
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import SGD
 
 # nltk.download()
@@ -17,7 +17,67 @@ IGNORED_LETTERS = [p for p in string.punctuation]
 lemmatizer = WordNetLemmatizer()
 
 
-def train():
+def get_classes(lang):
+    """
+    Retrieve contexts' labels from the database
+
+    :param lang: label's language
+    :return: a sorted list of labels
+    """
+    classes = []
+    if lang == 'en':
+        classes = [context[0] for context in Context.query.with_entities(Context.label_en).all()]
+    elif lang == 'fr':
+        classes = [context[0] for context in Context.query.with_entities(Context.label_fr).all()]
+    elif lang == 'ar':
+        classes = [context[0] for context in Context.query.with_entities(Context.label_ar).all()]
+    return sorted(classes)
+
+
+def get_patterns(lang):
+    """
+    Retrieve contexts' patterns from the database
+
+    :param lang: patterns' language
+    :return: a list of patterns
+    """
+    return [pattern[0]
+            for pattern in
+            Pattern.query.with_entities(Pattern.label, Pattern.language).filter(Pattern.language == lang).all()]
+
+
+def get_words(patterns):
+    """
+    Tokenize patterns
+    Remove ignored letters
+
+    :param patterns: a list of patterns
+    :return: sorted set of words
+    """
+    words = []
+    for pattern in patterns:
+        words.extend(nltk.word_tokenize(pattern))
+    words = [lemmatizer.lemmatize(word) for word in words if word not in IGNORED_LETTERS]
+    return sorted(set(words))
+
+
+def get_label(lang, context):
+    """
+    :param lang: label's language
+    :param context: Context object
+    :return: context's label based on the specified language
+    """
+    label = ''
+    if lang == 'en':
+        label = context.label_en
+    elif lang == 'fr':
+        label = context.label_fr
+    elif lang == 'ar':
+        label = context.label_ar
+    return label
+
+
+def train_model(lang):
     """
     Prepare data,
     save words/classes,
@@ -26,26 +86,20 @@ def train():
 
     :return: None
     """
+
     # PREPARE DATA
-    data = json.loads(open(f'data/database_{lang}.json').read())
-    classes = []
-    for item in data:
-        if item['tag'] not in classes:
-            classes.append(item['tag'])
-    classes = sorted(classes)
-    words = []
-    for item in data:
-        for pattern in item['patterns']:
-            words.extend(nltk.word_tokenize(pattern))
-    words = [lemmatizer.lemmatize(word) for word in words if word not in IGNORED_LETTERS]
-    words = sorted(set(words))
+    classes = get_classes(lang=lang)
+    patterns = get_patterns(lang)
+    words = get_words(patterns)
+
+    # GENERATE DOCUMENTS
     documents = []
-    for item in data:
-        for pattern in item['patterns']:
-            documents.append((nltk.word_tokenize(pattern), item['tag']))
+    for context in Context.query.all():
+        for pattern in filter(lambda p: p.language == lang, context.patterns):
+            documents.append((nltk.word_tokenize(pattern.label), get_label(lang, context)))
 
+    # PREPARE TRAINING DATA
     training = []
-
     for document in documents:
         input_representation = np.zeros(len(words))
         output_representation = np.zeros(len(classes))
@@ -62,8 +116,8 @@ def train():
     train_y = list(training[:, 1])
 
     # SAVE WORDS/CLASSES
-    pickle.dump(words, open(f'output/words_{lang}.pkl', 'wb'))
-    pickle.dump(classes, open(f'output/classes_{lang}.pkl', 'wb'))
+    pickle.dump(words, open(f'model/output/words_{lang}.pkl', 'wb'))
+    pickle.dump(classes, open(f'model/output/classes_{lang}.pkl', 'wb'))
 
     # CREATE/TRAIN/SAVE MODEL
     model = Sequential()
@@ -77,10 +131,4 @@ def train():
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
     result = model.fit(x=np.array(train_x), y=np.array(train_y), batch_size=4, epochs=200, verbose=1)
-    model.save(f'output/model_{lang}.h5', result)
-
-
-languages = ['en']  # TODO ADD LATER 'fr', 'ar'
-
-for lang in languages:
-    train()
+    model.save(f'model/output/model_{lang}.h5', result)
