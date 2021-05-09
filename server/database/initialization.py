@@ -7,7 +7,7 @@ import pandas as pd
 def initialize_database():
     # INITIALIZE ROLES
     if database.session.query(Role).count() == 0:
-        roles = json.loads(open(f'{Path().absolute()}/database/data/roles.json').read())
+        roles = json.loads(open(f'{Path().absolute()}/server/database/data/roles.json').read())
         for role in roles:
             database.session.add(
                 Role(
@@ -36,7 +36,7 @@ def initialize_database():
 
     # INITIALIZE CONTRIBUTIONS
     if database.session.query(Context).count() == 0:
-        en = json.loads(open(f'{Path().absolute()}/model/data/database_en.json').read())
+        en = json.loads(open(f'{Path().absolute()}/server/model/data/database_en.json').read())
         # fr = json.loads(open(f'{Path().absolute()}/model/data/database_fr.json').read())
         # ar = json.loads(open(f'{Path().absolute()}/model/data/database_ar.json').read())
 

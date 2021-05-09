@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1278@localhost:5432/pfe'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1278@localhost:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 database.init_app(app)
