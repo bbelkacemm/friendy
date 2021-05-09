@@ -1,0 +1,15 @@
+name: pfe
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - numpy
+  - nltk
+  - sqlalchemy
+  - pandas
+  - flask-cors
+  - tensorflow
+  - python=3.7
+  - flask
+  - flask-migrate
+  - psycopg2
