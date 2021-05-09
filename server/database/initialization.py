@@ -82,6 +82,7 @@ def initialize_database():
                 status='valid',
                 contributor_id=admin.id,
                 validator_id=admin.id,
+                validated_at=datetime.datetime.utcnow(),
                 context=Context(
                     code=context['code'],
                     label_en=context['label_en'] if 'label_en' in context else None,

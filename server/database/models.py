@@ -106,11 +106,27 @@ class Contribution(database.Model):
             'context': self.context.as_dict(),
             'createdAt': self.created_at,
             'validatedAt': self.validated_at,
+            'contributor': self.contributor.as_dict(),
+            'validator': self.validator.as_dict()
         })
 
 
-User.contributions = database.relationship('Contribution', foreign_keys=Contribution.contributor_id)
+User.contributions = database.relationship(
+    'Contribution',
+    foreign_keys=Contribution.contributor_id,
+    back_populates='contributor'
+)
 User.validated_contributions = database.relationship('Contribution', foreign_keys=Contribution.validator_id)
+Contribution.contributor = database.relationship(
+    'User',
+    back_populates='contributions',
+    foreign_keys=Contribution.contributor_id
+)
+Contribution.validator = database.relationship(
+    'User',
+    back_populates='validated_contributions',
+    foreign_keys=Contribution.validator_id
+)
 
 
 class Context(database.Model):

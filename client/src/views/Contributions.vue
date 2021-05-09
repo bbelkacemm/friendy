@@ -19,10 +19,11 @@
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
-            <template v-slot:item.status="{item}">
-                <v-icon v-if="item.status === 'pending'">mdi-timer-sand</v-icon>
-                <v-icon v-if="item.status === 'valid'" color="green">mdi-check</v-icon>
-                <v-icon v-if="item.status === 'invalid'" color="error">mdi-close</v-icon>
+            <template v-slot:item.contributor="{item}">
+                {{ item.contributor.firstName + ' ' + item.contributor.lastName }}
+            </template>
+            <template v-slot:item.validator="{item}">
+                {{ item.validator.firstName + ' ' + item.validator.lastName }}
             </template>
             <template v-slot:item.createdAt="{item}">
                 <div v-if="item['createdAt']">
@@ -35,6 +36,11 @@
                     {{formatDate(item['validatedAt']).toUpperCase()}}
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
+            </template>
+            <template v-slot:item.status="{item}">
+                <v-icon v-if="item.status === 'pending'">mdi-timer-sand</v-icon>
+                <v-icon v-if="item.status === 'valid'" color="green">mdi-check</v-icon>
+                <v-icon v-if="item.status === 'invalid'" color="error">mdi-close</v-icon>
             </template>
         </v-data-table>
     </v-container>
@@ -57,6 +63,14 @@ export default {
                 {
                     text: this.$t('description'),
                     value: 'description',
+                },
+                {
+                    text: this.$t('contributor'),
+                    value: 'contributor',
+                },
+                {
+                    text: this.$t('validator'),
+                    value: 'validator',
                 },
                 {
                     text: this.$t('createdAt'),
