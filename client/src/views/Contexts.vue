@@ -1,15 +1,24 @@
 <template>
     <v-container fluid>
         <!-- TODO GET VALID CONTEXTS -->
-        <v-toolbar dense elevation="0" class="black" dark>
-        </v-toolbar>
 
         <v-data-table :headers="headers"
                       :items="contexts"
-                      :items-per-page="5"
+                      :items-per-page="10"
                       v-model="selectedContexts"
+                      :search="search"
                       show-select
                       class="elevation-1">
+            <template v-slot:top>
+                <v-container fluid>
+                    <v-text-field :label="$t('search')" v-model="search" hide-details="auto" dense outlined>
+                        <template v-slot:append>
+                            <v-icon>mdi-magnify</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-container>
+            </template>
+
         </v-data-table>
 
     </v-container>
@@ -54,6 +63,7 @@ export default {
             ],
             selectedContexts: [],
             contributionFormKey: 0,
+            search: null,
         }
     },
     computed: {

@@ -24,7 +24,7 @@ const actions = {
         if (contexts) {
             context.commit('SET_CONTEXTS', contexts)
         } else {
-            const contexts = await get('/contexts')
+            const contexts = await get('/contexts/valid')
             context.commit('SET_CONTEXTS', contexts)
         }
     },

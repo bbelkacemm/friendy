@@ -107,7 +107,7 @@ class Contribution(database.Model):
             'createdAt': self.created_at,
             'validatedAt': self.validated_at,
             'contributor': self.contributor.as_dict(),
-            'validator': self.validator.as_dict()
+            'validator': self.validator.as_dict() if self.validator else None
         })
 
 

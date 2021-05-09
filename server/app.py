@@ -262,15 +262,14 @@ def context():
             return 400
 
 
-# CONTEXTS
-@app.route('/contexts', methods=['GET'])
-def get_contexts():
+# CONTEXTS BY STATUS
+@app.route('/contexts/<status>', methods=['GET'])
+def get_contexts(status):
     if request.method == 'GET':
         try:
-            # TODO RETURN CONTRIBUTIONS
-            result = database.session.query(Context).all()
-            return make_response(jsonify([context.as_dict() for context in result]), 200)
-        except Exception as exception:
+            result = database.session.query(Contribution).filter_by(status=status).all()
+            return make_response(jsonify([c.context.as_dict() for c in result]), 200)
+        except SQLAlchemyError as exception:
             print(exception)
             return 400
 
