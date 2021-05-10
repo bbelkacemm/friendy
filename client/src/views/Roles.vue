@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="black" dark>
+        <v-toolbar dense elevation="0" class="primary" dark>
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
                 <role-form add v-on:close="`${formKey++}-add`" :key="formKey"/>
@@ -20,7 +20,7 @@
 
         <v-data-table :headers="headers"
                       :items="roles"
-                      :items-per-page="5"
+                      :items-per-page="14"
                       v-model="selectedRoles"
                       show-select
                       class="elevation-1"></v-data-table>

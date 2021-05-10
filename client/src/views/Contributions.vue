@@ -16,7 +16,7 @@
                       class="elevation-1">
             <template v-slot:top>
                 <v-container fluid>
-                    <v-text-field :label="$t('search')" v-model="search" hide-details="auto" dense outlined>
+                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense outlined>
                         <template v-slot:append>
                             <v-icon>mdi-magnify</v-icon>
                         </template>

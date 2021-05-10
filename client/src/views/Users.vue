@@ -24,7 +24,7 @@
 
         <v-data-table :headers="headers"
                       :items="users"
-                      :items-per-page="5"
+                      :items-per-page="14"
                       v-model="selectedUsers"
                       show-select
                       class="elevation-1">

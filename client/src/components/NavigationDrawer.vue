@@ -11,10 +11,10 @@
 
             </v-list-item-group>
 
-            <v-subheader>{{ $t('contribution').toUpperCase() }}</v-subheader>
+            <v-subheader>{{ $t('administration').toUpperCase() }}</v-subheader>
 
             <v-list-item-group>
-                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in contribution" :to="item.link">
+                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in admin" :to="item.link">
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -22,10 +22,10 @@
                 </v-list-item>
             </v-list-item-group>
 
-            <v-subheader>{{ $t('administration').toUpperCase() }}</v-subheader>
+            <v-subheader>{{ $t('contribution').toUpperCase() }}</v-subheader>
 
             <v-list-item-group>
-                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in admin" :to="item.link">
+                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in contribution" :to="item.link">
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -54,24 +54,6 @@ export default {
     },
     data: function () {
         return {
-            contribution: [
-                {
-                    icon: 'mdi-plus',
-                    link: 'contributions',
-                    label: 'contributions',
-                    initialize: () => {
-                        this.getContributions()
-                    },
-                },
-                {
-                    icon: 'mdi-plus',
-                    link: 'contexts',
-                    label: 'contexts',
-                    initialize: () => {
-                        this.getContexts()
-                    },
-                },
-            ],
             admin: [
                 {
                     icon: 'mdi-monitor-dashboard',
@@ -91,11 +73,29 @@ export default {
                     },
                 },
                 {
-                    icon: 'mdi-account',
+                    icon: 'mdi-badge-account-outline',
                     link: 'roles',
                     label: 'roles',
                     initialize: () => {
                         this.setRoles()
+                    },
+                },
+            ],
+            contribution: [
+                {
+                    icon: 'mdi-clipboard-edit-outline',
+                    link: 'contributions',
+                    label: 'contributions',
+                    initialize: () => {
+                        this.getContributions()
+                    },
+                },
+                {
+                    icon: 'mdi-file-document',
+                    link: 'contexts',
+                    label: 'contexts',
+                    initialize: () => {
+                        this.getContexts()
                     },
                 },
             ],
