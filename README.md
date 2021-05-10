@@ -22,7 +22,17 @@ docker pull postgres
 docker container run --name pfe -d -p 5432:5432 -e POSTGRES_PASSWORD=1234 postgres
 ```
 
-3. Launch the server
+3. Download nltk data
+
+```python
+import nltk
+
+# uncomment 'nltk.download()' located in server/model/train.py, 
+# after downloading the data comment it again
+nltk.download()
+```
+
+4. Launch the server
 
 ```shell
 # if you are on macos replace set with export
@@ -30,12 +40,14 @@ docker container run --name pfe -d -p 5432:5432 -e POSTGRES_PASSWORD=1234 postgr
 set FLASK_DEBUG=0 && set FLASK_APP=server/app.py && python -m flask run
 ```
 
-4. Launch the client (web)
+5. Launch the client (web)
 
 ```shell
 cd client
 npm run serve
 ```
+
+6. Train the model from the dashboard view
 
 ## Features
 
@@ -67,6 +79,10 @@ npm run serve
     - [ ] Edit contribution
     - [ ] Delete contribution
     - [ ] Validate contribution
+- [ ] Contexts
+    - [x] Display valid contexts
+    - [ ] Display details of a context 
+    - [x] Search for a context
 - [ ] Users
     - [x] Display users
     - [x] Add user
