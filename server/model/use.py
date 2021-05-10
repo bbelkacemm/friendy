@@ -2,6 +2,7 @@ import random
 import pickle
 import nltk
 import numpy as np
+from pathlib import Path
 from nltk.stem import WordNetLemmatizer
 from tensorflow.keras.models import load_model
 from server.database.models import *
@@ -87,10 +88,10 @@ def generate_response(user_input, lang):
     :return: an object containing the response and the recommended prepositions
     """
     # LOAD NECESSARY DATA
-    words = pickle.load(open(f'model/output/words_{lang}.pkl', 'rb'))
-    classes = pickle.load(open(f'model/output/classes_{lang}.pkl', 'rb'))
+    words = pickle.load(open(f'{Path().absolute()}/server/model/output/words_{lang}.pkl', 'rb'))
+    classes = pickle.load(open(f'{Path().absolute()}/server/model/output/classes_{lang}.pkl', 'rb'))
     # LOAD MODEL
-    model = load_model(f'model/output/model_{lang}.h5')
+    model = load_model(f'{Path().absolute()}/server/model/output/model_{lang}.h5')
     # PREDICT CLASS
     predictions = predict_class(user_input, model, words, classes)
     response = 'Error'

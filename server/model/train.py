@@ -1,8 +1,10 @@
+import os
 import random
 import string
 import pickle
 import numpy as np
 import nltk
+from pathlib import Path
 from server.database.models import *
 from nltk.stem import WordNetLemmatizer
 
@@ -116,8 +118,10 @@ def train_model(lang):
     train_y = list(training[:, 1])
 
     # SAVE WORDS/CLASSES
-    pickle.dump(words, open(f'model/output/words_{lang}.pkl', 'wb'))
-    pickle.dump(classes, open(f'model/output/classes_{lang}.pkl', 'wb'))
+    if not os.path.exists('server/model/output'):
+        os.mkdir('server/model/output')
+    pickle.dump(words, open(f'{Path().absolute()}/server/model/output/words_{lang}.pkl', 'wb'))
+    pickle.dump(classes, open(f'{Path().absolute()}/server/model/output/classes_{lang}.pkl', 'wb'))
 
     # CREATE/TRAIN/SAVE MODEL
     model = Sequential()
@@ -131,4 +135,4 @@ def train_model(lang):
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
     result = model.fit(x=np.array(train_x), y=np.array(train_y), batch_size=4, epochs=200, verbose=1)
-    model.save(f'model/output/model_{lang}.h5', result)
+    model.save(f'{Path().absolute()}/server/model/output/model_{lang}.h5', result)
