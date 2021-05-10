@@ -24,42 +24,42 @@
                     <v-container fluid class="pa-0">
                         <v-text-field class="mb-2" v-model="firstName" :rules="[validationRules.required]" outlined dense
                                       hide-details="auto"
-                                      :label="$t('firstName')"></v-text-field>
+                                      :label="$t('firstName').toUpperCase()"></v-text-field>
                         <v-text-field class="mb-2" v-model="lastName" :rules="[validationRules.required]" outlined dense
                                       hide-details="auto"
-                                      :label="$t('lastName')"></v-text-field>
-                        <v-text-field class="mb-2" v-model="username" :rules="[validationRules.required]" :disabled="user"
+                                      :label="$t('lastName').toUpperCase()"></v-text-field>
+                        <v-text-field class="mb-2" v-model="username" :rules="[validationRules.required]" :disabled="edit"
                                       outlined dense
                                       hide-details="auto"
-                                      :label="$t('username')"></v-text-field>
+                                      :label="$t('username').toUpperCase()"></v-text-field>
                         <v-text-field v-if="!data" class="mb-2" v-model="password"
                                       :rules="[validationRules.required, validationRules.passwordLength]"
                                       outlined hide-details="auto"
                                       dense
-                                      :label="$t('password')"
+                                      :label="$t('password').toUpperCase()"
                                       type="password"></v-text-field>
                         <v-text-field v-if="!data" class="mb-2" v-model="confirmPassword" outlined dense
                                       hide-details="auto"
                                       :rules="[validationRules.required, validationRules.passwordLength, validationRules.passwordMatch(password, confirmPassword)]"
-                                      :label="$t('confirmPassword')"
+                                      :label="$t('confirmPassword').toUpperCase()"
                                       type="password"></v-text-field>
-                        <v-text-field class="mb-2" :label="$t('birthdate')" v-model="birthdate"
+                        <v-text-field class="mb-2" :label="$t('birthdate').toUpperCase()" v-model="birthdate"
                                       :rules="[validationRules.required]" hide-details="auto"
                                       outlined dense
                                       type="date"></v-text-field>
-                        <v-autocomplete class="mb-2" :label="$t('gender')" v-model="gender" :rules="[validationRules.required]"
+                        <v-autocomplete class="mb-2" :label="$t('gender').toUpperCase()" v-model="gender" :rules="[validationRules.required]"
                                         hide-details="auto" :items="genderList" outlined dense></v-autocomplete>
-                        <v-autocomplete class="mb-2" :label="$t('role')" v-model="role" :rules="[validationRules.required]"
+                        <v-autocomplete class="mb-2" :label="$t('role').toUpperCase()" v-model="role" :rules="[validationRules.required]"
                                         hide-details="auto" :items="rolesAutocomplete" outlined dense></v-autocomplete>
                     </v-container>
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions class="pa-0">
-                    <v-btn @click="clear" text small>
+                    <v-btn @click="clear" text>
                         {{ $t('clear') }}
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn @click="save" tile class="primary" small>
+                    <v-btn @click="save" tile class="primary">
                         {{ $t('save') }}
                     </v-btn>
                 </v-card-actions>
@@ -113,7 +113,7 @@ export default {
         save: async function () {
             if (this.$refs.form.validate()) {
                 if (this.add) {
-                    const user = await post('/users', {
+                    const user = await post('/users/user', {
                         'first_name': this.firstName,
                         'last_name': this.lastName,
                         'username': this.username,

@@ -1,21 +1,21 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="black" dark>
+        <v-toolbar dense elevation="0" class="primary" dark>
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
                 <!-- ADD -->
-                <user-form add v-on:close="`${this.addUserFormKey++}-add-user`" :key="addUserFormKey"/>
+                <user-form add v-on:close="formKey++" :key="`${formKey}-add-user`"/>
 
                 <!-- EDIT --->
-                <user-form v-if="selectedUsers[0]" edit :data="selectedUsers[0]"
-                           v-on:close="`${this.editUserFormKey++}-add-user`" :key="editUserFormKey"/>
+                <user-form v-if="selectedUsers[0] && selectedUsers.length === 1" edit :data="selectedUsers[0]"
+                           v-on:close="formKey++" :key="`${formKey}-edit-user`"/>
                 <v-btn v-else plain disabled>
                     <v-icon left>mdi-pencil</v-icon>
                     {{ $t('edit') }}
                 </v-btn>
 
                 <!-- DELETE -->
-                <v-btn plain>
+                <v-btn plain :disabled="selectedUsers.length !== 1">
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
@@ -32,11 +32,11 @@
             <template v-slot:item.gender="{item}">
                 <div v-if="item.gender === 'f'">
                     <v-icon left>mdi-gender-female</v-icon>
-                    {{ $t('f').toUpperCase() }}
+                    {{ capitalizeFirst($t('f').toUpperCase()) }}
                 </div>
                 <div v-if="item.gender === 'm'">
                     <v-icon left>mdi-gender-male</v-icon>
-                    {{ $t('m').toUpperCase() }}
+                    {{ capitalizeFirst($t('m').toUpperCase()) }}
                 </div>
             </template>
 
@@ -62,29 +62,28 @@ export default {
         return {
             headers: [
                 {
-                    text: this.$t('username'),
+                    text: this.$t('username').toUpperCase(),
                     value: 'username',
                 },
                 {
-                    text: this.$t('firstName'),
+                    text: this.$t('firstName').toUpperCase(),
                     value: 'firstName',
                 },
                 {
-                    text: this.$t('lastName'),
+                    text: this.$t('lastName').toUpperCase(),
                     value: 'lastName',
                 },
                 {
-                    text: this.$t('birthdate'),
+                    text: this.$t('birthdate').toUpperCase(),
                     value: 'birthdate',
                 },
                 {
-                    text: this.$t('gender'),
+                    text: this.$t('gender').toUpperCase(),
                     value: 'gender',
                 },
             ],
             selectedUsers: [],
-            addUserFormKey: 0,
-            editUserFormKey: 0,
+            formKey: 0,
         }
     },
     computed: {
