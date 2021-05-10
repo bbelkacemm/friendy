@@ -3,18 +3,15 @@ const state = {
 }
 
 const mutations = {
-    SET_MESSAGES: function (state, messages) {
-        state.messages = messages
-    },
     ADD_MESSAGE: function (state, message) {
         state.messages.push(message)
+    },
+    RESET_MESSAGES_STATE: function (state) {
+        state.messages = []
     },
 }
 
 const actions = {
-    setMessages: function (context, messages) {
-        context.commit('SET_MESSAGES', messages)
-    },
     addMessage: function (context, { value, sender }) {
         context.commit('ADD_MESSAGE', {
             'value': value,

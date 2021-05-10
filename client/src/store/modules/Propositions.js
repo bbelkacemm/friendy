@@ -6,6 +6,9 @@ const mutations = {
     SET_PROPOSITIONS: function (state, propositions) {
         state.propositions = propositions
     },
+    RESET_PROPOSITION_STATE: function (state) {
+        state.propositions = []
+    },
 }
 
 const actions = {

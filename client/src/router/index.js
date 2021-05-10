@@ -1,3 +1,4 @@
+import store from '@/store'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from '@/App'
@@ -9,6 +10,7 @@ import Roles from '@/views/Roles'
 import Contexts from '@/views/Contexts'
 import Dashboard from '@/views/Dashboard'
 import Contributions from '@/views/Contributions'
+import NotFound from '@/views/NotFound'
 
 Vue.use(VueRouter)
 
@@ -58,12 +60,29 @@ const routes = [
         name: 'contexts',
         component: Contexts,
     },
+    {
+        path: '/not-found',
+        name: 'notFound',
+        component: NotFound,
+    },
 ]
 
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
     routes,
+})
+
+router.beforeEach(async (to, from, next) => {
+    if (!routes.map(route => route.path).includes(to.path)) {
+        return await router.push({name: 'notFound'})
+    }
+    if (!['home', 'login', 'signup'].includes(to.name)) {
+        if (!store.getters['authentication/user']) {
+            return await router.push({ name: 'home' })
+        }
+    }
+    next()
 })
 
 export default router

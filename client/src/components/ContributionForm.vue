@@ -36,8 +36,10 @@
                             <v-container v-if="step === 1">
                                 <v-form v-on:submit.prevent="" ref="contributionForm">
                                     <v-text-field class="mb-2" v-model="title" :rules="[validationRules.required]"
-                                                  hide-details="auto" :label="$t('title')" outlined dense></v-text-field>
-                                    <v-textarea class="mb-2" v-model="description" :label="$t('description')" hide-details="auto" outlined dense></v-textarea>
+                                                  hide-details="auto" :label="$t('title')" outlined
+                                                  dense></v-text-field>
+                                    <v-textarea class="mb-2" v-model="description" :label="$t('description')"
+                                                hide-details="auto" outlined dense></v-textarea>
                                 </v-form>
                             </v-container>
                             <v-container v-if="step === 2">
@@ -159,7 +161,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { post } from '@/helpers/HTTPHelper'
 
 export default {
@@ -169,7 +171,7 @@ export default {
         edit: Boolean,
     },
     created: function () {
-        this.setContexts(null)
+        this.RESET_CONTEXTS_STATE()
     },
     data: function () {
         return {
@@ -317,8 +319,8 @@ export default {
                 user_id: this.user.id,
             })
             this.addContext(context)
-            this.setPatterns([])
-            this.setResponses([])
+            this.RESET_PATTERNS_STATE()
+            this.RESET_RESPONSES_STATE()
             this.dialog = false
             this.$emit('close')
         },
@@ -343,13 +345,16 @@ export default {
         },
         close: function () {
             this.dialog = false
-            this.setPatterns([])
-            this.setResponses([])
+            this.RESET_PATTERNS_STATE()
+            this.RESET_RESPONSES_STATE()
             this.$emit('close')
         },
-        ...mapActions('contexts', ['setContexts', 'addContext']),
+        ...mapActions('contexts', ['getContexts', 'addContext']),
         ...mapActions('patterns', ['setPatterns', 'addPattern']),
         ...mapActions('responses', ['setResponses', 'addResponse']),
+        ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
+        ...mapMutations('patterns', ['RESET_PATTERNS_STATE']),
+        ...mapMutations('responses', ['RESET_RESPONSES_STATE']),
     },
 }
 </script>

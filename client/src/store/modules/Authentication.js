@@ -6,6 +6,9 @@ const mutations = {
     SET_USER: function (state, user) {
         state.user = user
     },
+    RESET_AUTHENTICATION_STATE: function (state) {
+        state.user = null
+    },
 }
 
 const actions = {

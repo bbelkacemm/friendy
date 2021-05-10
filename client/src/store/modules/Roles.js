@@ -11,6 +11,9 @@ const mutations = {
     ADD_ROLE: function (state, role) {
         state.roles.push(role)
     },
+    RESET_ROLES_STATE: function (state) {
+        state.roles = []
+    },
 }
 
 const actions = {

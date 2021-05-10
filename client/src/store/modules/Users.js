@@ -17,10 +17,13 @@ const mutations = {
     DELETE_USER: function (state, index) {
         state.users.splice(index, 1)
     },
+    RESET_USERS_STATE: function (state) {
+        state.users = []
+    }
 }
 
 const actions = {
-    setUsers: async function (context) {
+    getUsers: async function (context) {
         const users = await get('/users')
         context.commit('SET_USERS', users)
     },

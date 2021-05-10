@@ -9,11 +9,8 @@ const mutations = {
     ADD_RESPONSE: function (state, response) {
         state.responses.push(response)
     },
-    EDIT_RESPONSE: function (state, payload) {
-        state.responses.splice(payload.index, 1, payload.response)
-    },
-    DELETE_RESPONSE: function (state, index) {
-        state.responses.splice(index, 1)
+    RESET_RESPONSES_STATE: function (state) {
+        state.responses = []
     },
 }
 
@@ -24,22 +21,6 @@ const actions = {
     addResponse: function (context, response) {
         context.commit('ADD_RESPONSE', response)
     },
-    // editResponse: function(context, response) {
-    //     for (let index = 0; index < context.state.responses.length; index++) {
-    //         if (context.state.responses[index].id === response.id) {
-    //
-    //             break
-    //         }
-    //     }
-    // },
-    // deleteResponse: function(context, response) {
-    //     for(let index = 0; index < context.state.responses.length; index++) {
-    //         if(context.state.responses[index].id === response.id) {
-    //
-    //             break
-    //         }
-    //     }
-    // }
 }
 
 const getters = {
