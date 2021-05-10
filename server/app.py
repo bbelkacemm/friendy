@@ -99,7 +99,8 @@ def get_users():
             print(exception)
 
 
-@app.route('/users', methods=['POST'])
+# SAVE USER
+@app.route('/users/user', methods=['POST'])
 def save_user():
     if request.method == 'POST':
         data = request.get_json()
@@ -113,7 +114,15 @@ def save_user():
         role_id = data['role_id']
 
         try:
-            user = User(username, password, first_name, last_name, birth_date, gender, role_id)
+            user = User(
+                username=username,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                birth_date=birth_date,
+                gender=gender,
+                role_id=role_id
+            )
             database.session.add(user)
             database.session.commit()
             return user.as_dict(), 201
@@ -122,6 +131,7 @@ def save_user():
             return 'addError', 400
 
 
+# UPDATE USER
 @app.route('/users/user/<id>', methods=['POST'])
 def update_user(id):
     if request.method == 'POST':
