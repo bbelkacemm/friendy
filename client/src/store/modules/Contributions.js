@@ -17,16 +17,18 @@ const mutations = {
     DELETE_CONTRIBUTION: function (state, index) {
         state.contributions.splice(index, 1)
     },
-    RESET_CONTRIBUTIONS_STATE: function(state){
-        console.log('caaaleeeed')
+    RESET_CONTRIBUTIONS_STATE: function (state) {
         state.contributions = []
-    }
+    },
 }
 
 const actions = {
     getContributions: async function (context) {
         const contributions = await get('/contributions')
         context.commit('SET_CONTRIBUTIONS', contributions)
+    },
+    addContribution: function (context, contribution) {
+        context.commit('ADD_CONTRIBUTION', contribution)
     },
 }
 

@@ -33,68 +33,68 @@
 
                     <v-stepper-items>
                         <v-stepper-content class="pa-0" v-for="step in steps" :key="`${step}-content`" :step="step">
-                            <v-container v-if="step === 1">
+                            <v-container v-if="step === 1" fluid>
                                 <v-form v-on:submit.prevent="" ref="contributionForm">
                                     <v-text-field class="mb-2" v-model="title" :rules="[validationRules.required]"
-                                                  hide-details="auto" :label="$t('title')" outlined
+                                                  hide-details="auto" :label="$t('title').toUpperCase()" outlined
                                                   dense></v-text-field>
-                                    <v-textarea class="mb-2" v-model="description" :label="$t('description')"
+                                    <v-textarea class="mb-2" v-model="description" :label="$t('description').toUpperCase()"
                                                 hide-details="auto" outlined dense></v-textarea>
                                 </v-form>
                             </v-container>
-                            <v-container v-if="step === 2">
+                            <v-container v-if="step === 2" fluid>
                                 <v-form v-on:submit.prevent="" ref="contextForm">
                                     <v-text-field class="mb-2" v-model="code" :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('code')"></v-text-field>
+                                                  hide-details="auto" :label="$t('code').toUpperCase()"></v-text-field>
                                     <div id="context-labels">
                                         <v-text-field class="mb-2" v-model="contextLabelEn"
                                                       :rules="[validationRules.required]"
                                                       outlined
                                                       dense
-                                                      hide-details="auto" :label="$t('contextLabelEn')"></v-text-field>
+                                                      hide-details="auto" :label="$t('contextLabelEn').toUpperCase()"></v-text-field>
                                         <v-text-field class="mb-2" v-model="contextLabelFr"
                                                       :rules="[validationRules.required]"
                                                       outlined
                                                       dense
-                                                      hide-details="auto" :label="$t('contextLabelFr')"></v-text-field>
+                                                      hide-details="auto" :label="$t('contextLabelFr').toUpperCase()"></v-text-field>
                                         <v-text-field class="mb-2" v-model="contextLabelAr"
                                                       :rules="[validationRules.required]"
                                                       outlined
                                                       dense
-                                                      hide-details="auto" :label="$t('contextLabelAr')"></v-text-field>
+                                                      hide-details="auto" :label="$t('contextLabelAr').toUpperCase()"></v-text-field>
                                     </div>
                                     <v-text-field class="mb-2" v-model="propositionLabelEn"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelEn')"></v-text-field>
+                                                  hide-details="auto" :label="$t('propositionLabelEn').toUpperCase()"></v-text-field>
                                     <v-text-field class="mb-2" v-model="propositionLabelFr"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelFr')"></v-text-field>
+                                                  hide-details="auto" :label="$t('propositionLabelFr').toUpperCase()"></v-text-field>
                                     <v-text-field class="mb-2" v-model="propositionLabelAr"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelAr')"></v-text-field>
+                                                  hide-details="auto" :label="$t('propositionLabelAr').toUpperCase()"></v-text-field>
                                 </v-form>
                             </v-container>
-                            <v-container v-if="step === 3">
+                            <v-container v-if="step === 3" fluid>
                                 <v-form v-on:submit.prevent="" ref="patternForm">
                                     <div id="pattern-form">
                                         <v-text-field class="mb-2" v-model="patternLabel"
                                                       :rules="[validationRules.required]"
                                                       outlined
                                                       dense hide-details="auto"
-                                                      :label="$t('patternLabel')"></v-text-field>
-                                        <v-combobox class="mb-2" :label="$t('language')" v-model="patternLanguage"
+                                                      :label="$t('patternLabel').toUpperCase()"></v-text-field>
+                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()" v-model="patternLanguage"
                                                     :rules="[validationRules.required]"
                                                     hide-details="auto" :items="languagesList" outlined
                                                     dense></v-combobox>
-                                        <v-btn @click="pushPattern" icon color="primary">
+                                        <v-btn @click="pushPattern" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
                                     </div>
@@ -102,19 +102,19 @@
                                 <v-data-table :headers="patternsHeaders" :items="patterns"
                                               :items-per-page="5"></v-data-table>
                             </v-container>
-                            <v-container v-if="step === 4">
+                            <v-container v-if="step === 4" fluid>
                                 <v-form v-on:submit.prevent="" ref="responseForm">
                                     <div id="response-form">
                                         <v-text-field class="mb-2" v-model="responseLabel"
                                                       :rules="[validationRules.required]"
                                                       outlined
                                                       dense hide-details="auto"
-                                                      :label="$t('responseLabel')"></v-text-field>
-                                        <v-combobox class="mb-2" :label="$t('language')" v-model="responseLanguage"
+                                                      :label="$t('responseLabel').toUpperCase()"></v-text-field>
+                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()" v-model="responseLanguage"
                                                     :rules="[validationRules.required]"
                                                     hide-details="auto" :items="languagesList" outlined
                                                     dense></v-combobox>
-                                        <v-btn @click="pushResponse" icon color="primary">
+                                        <v-btn @click="pushResponse" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
                                     </div>
@@ -122,22 +122,22 @@
                                 <v-data-table :headers="responsesHeaders" :items="responses"
                                               :items-per-page="5"></v-data-table>
                             </v-container>
-                            <v-container v-if="step === 5">
+                            <v-container v-if="step === 5" fluid>
                                 <v-data-table :headers="contextsHeaders" :items="contexts" v-model="selectedContexts"
                                               show-select :items-per-page="5"></v-data-table>
                             </v-container>
                             <v-divider></v-divider>
                             <v-card-actions fluid elevation="0" class="pa-0">
-                                <v-btn v-if="currentStep > 1" small plain @click="back(step)">
+                                <v-btn v-if="currentStep > 1" plain @click="back(step)">
                                     <v-icon left>mdi-arrow-left-thick</v-icon>
                                     {{ $t('back') }}
                                 </v-btn>
                                 <v-spacer></v-spacer>
-                                <v-btn v-if="currentStep < steps" small text color="primary" @click="next(step)">
+                                <v-btn v-if="currentStep < steps" text color="primary" @click="next(step)">
                                     {{ $t('continue') }}
                                     <v-icon right>mdi-arrow-right-thick</v-icon>
                                 </v-btn>
-                                <v-btn v-else small @click="save" text color="primary">
+                                <v-btn v-else @click="save" text color="primary">
                                     <v-icon left>mdi-content-save</v-icon>
                                     {{ $t('save') }}
                                 </v-btn>
@@ -171,7 +171,9 @@ export default {
         edit: Boolean,
     },
     created: function () {
-        this.RESET_CONTEXTS_STATE()
+        this.getContexts()
+        this.RESET_PATTERNS_STATE()
+        this.RESET_RESPONSES_STATE()
     },
     data: function () {
         return {
@@ -179,11 +181,11 @@ export default {
             currentStep: 1,
             steps: 5,
             titles: [
-                this.$t('contributionForm'),
-                this.$t('contextForm'),
-                this.$t('patternsForm'),
-                this.$t('responsesForm'),
-                this.$t('relatedContexts'),
+                this.capitalizeFirst(this.$t('contributionForm')),
+                this.capitalizeFirst(this.$t('contextForm')),
+                this.capitalizeFirst(this.$t('patternsForm')),
+                this.capitalizeFirst(this.$t('responsesForm')),
+                this.capitalizeFirst(this.$t('relatedContexts')),
             ],
             // CONTRIBUTION
             title: null,
@@ -201,11 +203,11 @@ export default {
             patternLanguage: null,
             patternsHeaders: [
                 {
-                    text: this.$t('label'),
+                    text: this.$t('label').toUpperCase(),
                     value: 'label',
                 },
                 {
-                    text: this.$t('language'),
+                    text: this.$t('language').toUpperCase(),
                     value: 'language',
                 },
             ],
@@ -214,26 +216,26 @@ export default {
             responseLanguage: null,
             responsesHeaders: [
                 {
-                    text: this.$t('label'),
+                    text: this.$t('label').toUpperCase(),
                     value: 'label',
                 },
                 {
-                    text: this.$t('language'),
+                    text: this.$t('language').toUpperCase(),
                     value: 'language',
                 },
             ],
             // RELATED CONTEXTS
             contextsHeaders: [
                 {
-                    text: this.$t('labelEn'),
+                    text: this.$t('labelEn').toUpperCase(),
                     value: 'label_en',
                 },
                 {
-                    text: this.$t('labelFr'),
+                    text: this.$t('labelFr').toUpperCase(),
                     value: 'label_fr',
                 },
                 {
-                    text: this.$t('labelAr'),
+                    text: this.$t('labelAr').toUpperCase(),
                     value: 'label_ar',
                 },
             ],
@@ -299,7 +301,7 @@ export default {
             this.currentStep = step + 1
         },
         save: async function () {
-            const context = await post('/contributions/contribution', {
+            const contribution = await post('/contributions/contribution', {
                 contribution: {
                     'title': this.title,
                     'description': this.description,
@@ -318,7 +320,7 @@ export default {
                 relatedContexts: this.selectedContexts.map(context => context.code),
                 user_id: this.user.id,
             })
-            this.addContext(context)
+            this.addContribution(contribution)
             this.RESET_PATTERNS_STATE()
             this.RESET_RESPONSES_STATE()
             this.dialog = false
@@ -349,7 +351,8 @@ export default {
             this.RESET_RESPONSES_STATE()
             this.$emit('close')
         },
-        ...mapActions('contexts', ['getContexts', 'addContext']),
+        ...mapActions('contributions', ['addContribution']),
+        ...mapActions('contexts', ['getContexts']),
         ...mapActions('patterns', ['setPatterns', 'addPattern']),
         ...mapActions('responses', ['setResponses', 'addResponse']),
         ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),

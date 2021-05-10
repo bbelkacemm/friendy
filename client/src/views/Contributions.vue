@@ -1,18 +1,29 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="black" dark>
+        <v-toolbar dense elevation="0" class="primary" dark>
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
-                <contribution-form add v-on:close="`${contributionFormKey++}-add`" :key="contributionFormKey"/>
+                <contribution-form add v-on:close="formKey++" :key="`${formKey}-add`"/>
             </v-toolbar-items>
         </v-toolbar>
 
         <v-data-table :headers="headers"
                       :items="contributions"
-                      :items-per-page="5"
+                      :items-per-page="13"
+                      :search="search"
                       v-model="selectedContributions"
                       show-select
                       class="elevation-1">
+            <template v-slot:top>
+                <v-container fluid>
+                    <v-text-field :label="$t('search')" v-model="search" hide-details="auto" dense outlined>
+                        <template v-slot:append>
+                            <v-icon>mdi-magnify</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-container>
+            </template>
+
             <template v-slot:item.description="{item}">
                 <div v-if="item.description">
                     {{item.description}}
@@ -20,10 +31,20 @@
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
             <template v-slot:item.contributor="{item}">
-                {{ item.contributor.firstName + ' ' + item.contributor.lastName }}
+                <div v-if="item.contributor">
+                    {{ item.contributor.firstName + ' ' + item.contributor.lastName }}
+                </div>
+                <div v-else>
+                    <v-icon>mdi-minus</v-icon>
+                </div>
             </template>
             <template v-slot:item.validator="{item}">
-                {{ item.validator.firstName + ' ' + item.validator.lastName }}
+                <div v-if="item.validator">
+                    {{ item.validator.firstName + ' ' + item.validator.lastName }}
+                </div>
+                <div v-else>
+                    <v-icon>mdi-minus</v-icon>
+                </div>
             </template>
             <template v-slot:item.createdAt="{item}">
                 <div v-if="item['createdAt']">
@@ -57,36 +78,37 @@ export default {
         return {
             headers: [
                 {
-                    text: this.$t('title'),
+                    text: this.$t('title').toUpperCase(),
                     value: 'title',
                 },
                 {
-                    text: this.$t('description'),
+                    text: this.$t('description').toUpperCase(),
                     value: 'description',
                 },
                 {
-                    text: this.$t('contributor'),
+                    text: this.$t('contributor').toUpperCase(),
                     value: 'contributor',
                 },
                 {
-                    text: this.$t('validator'),
+                    text: this.$t('validator').toUpperCase(),
                     value: 'validator',
                 },
                 {
-                    text: this.$t('createdAt'),
+                    text: this.$t('createdAt').toUpperCase(),
                     value: 'createdAt',
                 },
                 {
-                    text: this.$t('validatedAt'),
+                    text: this.$t('validatedAt').toUpperCase(),
                     value: 'validatedAt',
                 },
                 {
-                    text: this.$t('status'),
+                    text: this.$t('status').toUpperCase(),
                     value: 'status'
                 },
             ],
             selectedContributions: [],
-            contributionFormKey: 0,
+            formKey: 0,
+            search: null,
         }
     },
     computed: {
