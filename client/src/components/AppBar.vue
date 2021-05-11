@@ -8,7 +8,7 @@
         </div>
         <v-avatar color="grey lighten-4" size="32"></v-avatar>
     </v-app-bar>
-    <v-app-bar app elevation="0" v-else>
+    <v-app-bar v-else app elevation="0" color="white">
         <v-spacer></v-spacer>
 
         <v-btn to="login" plain text>

@@ -85,7 +85,10 @@ export default {
             this.isTyping = false
         },
         scrollToBottom: function () {
-            document.querySelector('#messages-container').scrollTop = document.querySelector('#messages-container').scrollHeight
+            const container = document.querySelector('#messages-container')
+            if (container) {
+                container.scrollTop = container.scrollHeight
+            }
         },
         ...mapActions('messages', ['addMessage']),
         ...mapActions('propositions', ['setPropositions']),
