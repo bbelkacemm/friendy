@@ -75,6 +75,7 @@ npm run serve
     - [x] Receive a response with its propositions
 - [ ] Contributions
     - [x] Display contributions
+    - [x] Search for a contribution
     - [x] Add contribution
     - [ ] Edit contribution
     - [ ] Delete contribution
@@ -85,11 +86,13 @@ npm run serve
     - [x] Search for a context
 - [ ] Users
     - [x] Display users
+    - [x] Search for a user
     - [x] Add user
     - [x] Edit user
     - [ ] Delete user
 - [ ] Roles & Permissions
     - [x] Display roles/permissions
+    - [x] Search for a role
     - [x] Add role/permission
     - [x] Edit role/permission
     - [ ] Delete role/permission
