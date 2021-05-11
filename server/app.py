@@ -162,8 +162,9 @@ def get_roles():
             return 400
 
 
-@app.route('/roles', methods=['POST'])
-def add_role():
+# SAVE ROLE
+@app.route('/roles/role', methods=['POST'])
+def save_role():
     if request.method == 'POST':
         try:
             data = request.get_json()
@@ -181,8 +182,9 @@ def add_role():
             return 'addError', 400
 
 
+# UPDATE ROLE
 @app.route('/roles/role/<id>', methods=['POST'])
-def edit_role(id):
+def update_role(id):
     if request.method == 'POST':
         try:
             data = request.get_json()

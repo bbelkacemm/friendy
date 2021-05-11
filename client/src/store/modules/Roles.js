@@ -11,6 +11,9 @@ const mutations = {
     ADD_ROLE: function (state, role) {
         state.roles.push(role)
     },
+    EDIT_ROLE: function (state, { index, role }) {
+        state.roles.splice(index, 1, role)
+    },
     RESET_ROLES_STATE: function (state) {
         state.roles = []
     },
@@ -23,6 +26,12 @@ const actions = {
     },
     addRole: function (context, role) {
         context.commit('ADD_ROLE', role)
+    },
+    editRole: function (context, role) {
+        context.commit('EDIT_ROLE', {
+            index: context.state.roles.findIndex(i => i.id === role.id),
+            role: role,
+        })
     },
 }
 

@@ -23,23 +23,23 @@
                 <v-card-text>
                     <v-container fluid class="pa-0">
                         <v-text-field class="mb-2" v-model="roleLabel" :rules="[validationRules.required]"
-                                      outlined dense hide-details="auto" :label="$t('roleLabel')"></v-text-field>
+                                      outlined dense hide-details="auto" :label="$t('roleLabel').toUpperCase()"></v-text-field>
                     </v-container>
                     <v-form v-on:submit.prevent="" ref="permissionForm">
                         <v-container fluid id="permission-form" class="pa-0">
-                            <v-combobox :label="$t('permissionLabel')" v-model="permissionLabel"
+                            <v-combobox :label="$t('permissionLabel').toUpperCase()" v-model="permissionLabel"
                                         :rules="[validationRules.required]"
                                         hide-details="auto"
                                         :items="modules" outlined
                                         dense></v-combobox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canCreate"
-                                        :label="$t('create')"></v-checkbox>
+                                        :label="capitalizeFirst($t('create'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canRead"
-                                        :label="$t('read')"></v-checkbox>
+                                        :label="capitalizeFirst($t('read'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canUpdate"
-                                        :label="$t('update')"></v-checkbox>
+                                        :label="capitalizeFirst($t('update'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canDelete"
-                                        :label="$t('delete')"></v-checkbox>
+                                        :label="capitalizeFirst($t('delete'))"></v-checkbox>
                             <v-btn @click="addPermission" icon color="primary" tile :disabled="selectedPermissions[0]">
                                 <v-icon>mdi-plus</v-icon>
                             </v-btn>
@@ -82,11 +82,11 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions class="pa-0">
-                    <v-btn @click="clear" text small>
+                    <v-btn @click="clear" text>
                         {{ $t('clear') }}
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn @click="save" tile class="primary" small>
+                    <v-btn @click="save" tile class="primary">
                         {{ $t('save') }}
                     </v-btn>
                 </v-card-actions>
@@ -137,23 +137,23 @@ export default {
             ],
             headers: [
                 {
-                    text: this.$t('permissionLabel'),
+                    text: this.$t('permissionLabel').toUpperCase(),
                     value: 'label',
                 },
                 {
-                    text: this.$t('create'),
+                    text: this.$t('create').toUpperCase(),
                     value: 'canCreate',
                 },
                 {
-                    text: this.$t('read'),
+                    text: this.$t('read').toUpperCase(),
                     value: 'canRead',
                 },
                 {
-                    text: this.$t('update'),
+                    text: this.$t('update').toUpperCase(),
                     value: 'canUpdate',
                 },
                 {
-                    text: this.$t('delete'),
+                    text: this.$t('delete').toUpperCase(),
                     value: 'canDelete',
                 },
             ],
@@ -174,7 +174,7 @@ export default {
             if (this.$refs.form.validate()) {
                 if (this.permissions.length !== 0) {
                     if (this.add) {
-                        const role = await post('/roles', {
+                        const role = await post('/roles/role', {
                             'label': this.roleLabel,
                             'permissions': this.permissions,
                         })
@@ -186,7 +186,7 @@ export default {
                             'label': this.roleLabel,
                             'permissions': this.permissions,
                         })
-                        this.addRole(role)
+                        this.editRole(role)
                         this.dialog = false
                         this.$emit('close')
                     }
@@ -260,7 +260,7 @@ export default {
             this.$refs.permissionForm.reset()
             this.id = null
         },
-        ...mapActions('roles', ['addRole']),
+        ...mapActions('roles', ['addRole', 'editRole']),
     },
 }
 </script>

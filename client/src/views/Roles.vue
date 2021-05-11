@@ -3,15 +3,16 @@
         <v-toolbar dense elevation="0" class="primary" dark>
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
-                <role-form add v-on:close="`${formKey++}-add`" :key="formKey"/>
+                <role-form add v-on:close="formKey++" :key="`${formKey}-add`"/>
 
-                <role-form v-if="selectedRoles.length === 1" edit :data="selectedRoles[0]" v-on:close="`${formKey++}-edit`" :key="formKey"/>
+                <role-form v-if="selectedRoles.length === 1 && selectedRoles.length === 1" edit :data="selectedRoles[0]"
+                           v-on:close="`${formKey++}-edit`" :key="formKey"/>
                 <v-btn v-else plain disabled>
                     <v-icon left>mdi-pencil</v-icon>
                     {{ $t('edit') }}
                 </v-btn>
 
-                <v-btn plain>
+                <v-btn plain :disabled="selectedRoles.length !== 1">
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
@@ -21,9 +22,21 @@
         <v-data-table :headers="headers"
                       :items="roles"
                       :items-per-page="14"
+                      :search="search"
                       v-model="selectedRoles"
                       show-select
-                      class="elevation-1"></v-data-table>
+                      class="elevation-1">
+            <template v-slot:top>
+                <v-container fluid>
+                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
+                                  outlined>
+                        <template v-slot:append>
+                            <v-icon>mdi-magnify</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-container>
+            </template>
+        </v-data-table>
     </v-container>
 </template>
 
@@ -38,12 +51,13 @@ export default {
         return {
             headers: [
                 {
-                    text: this.$t('label'),
+                    text: this.$t('label').toUpperCase(),
                     value: 'label',
                 },
             ],
             selectedRoles: [],
             formKey: 0,
+            search: null,
         }
     },
     computed: {
