@@ -6,6 +6,10 @@
                     <message :key="index" :value="item.value" :sender="item.sender"/>
                 </template>
             </div>
+            <div class="pa-4 grey--text text--lighten-1" v-if="isTyping">
+                <v-icon color="grey lighten-1">mdi-dots-horizontal</v-icon>
+                {{ $t('isTyping') }}
+            </div>
             <div id="propositions-container">
                 <template v-for="(item, index) in propositions">
                     <proposition v-on:clicked="send($event)" class="proposition-item" :value="item" :key="index"/>
@@ -40,9 +44,13 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
     name: 'Home',
     components: { Message, Proposition },
+    mounted: function () {
+        this.scrollToBottom()
+    },
     data: function () {
         return {
             message: null,
+            isTyping: false,
         }
     },
     computed: {
@@ -52,11 +60,13 @@ export default {
     methods: {
         validateSend: async function () {
             if (this.$refs.form.validate()) {
-                await this.send(this.message)
+                const m = this.message
+                this.message = null
+                await this.send(m)
             }
-            this.message = null
         },
         send: async function (message) {
+            this.isTyping = true
             this.addMessage({
                 'value': message,
                 'sender': true,
@@ -71,6 +81,11 @@ export default {
                 })
                 this.setPropositions(response.propositions)
             }
+            this.scrollToBottom()
+            this.isTyping = false
+        },
+        scrollToBottom: function () {
+            document.querySelector('#messages-container').scrollTop = document.querySelector('#messages-container').scrollHeight
         },
         ...mapActions('messages', ['addMessage']),
         ...mapActions('propositions', ['setPropositions']),
