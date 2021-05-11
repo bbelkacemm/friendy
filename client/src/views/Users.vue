@@ -26,8 +26,19 @@
                       :items="users"
                       :items-per-page="14"
                       v-model="selectedUsers"
+                      :search="search"
                       show-select
                       class="elevation-1">
+            <template v-slot:top>
+                <v-container fluid>
+                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
+                                  outlined>
+                        <template v-slot:append>
+                            <v-icon>mdi-magnify</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-container>
+            </template>
 
             <template v-slot:item.gender="{item}">
                 <div v-if="item.gender === 'f'">
@@ -84,6 +95,7 @@ export default {
             ],
             selectedUsers: [],
             formKey: 0,
+            search: null,
         }
     },
     computed: {

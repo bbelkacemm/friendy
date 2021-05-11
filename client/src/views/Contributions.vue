@@ -10,6 +10,7 @@
         <v-data-table :headers="headers"
                       :items="contributions"
                       :items-per-page="13"
+                      sort-by="status"
                       :search="search"
                       v-model="selectedContributions"
                       show-select
@@ -103,7 +104,7 @@ export default {
                 },
                 {
                     text: this.$t('status').toUpperCase(),
-                    value: 'status'
+                    value: 'status',
                 },
             ],
             selectedContributions: [],
