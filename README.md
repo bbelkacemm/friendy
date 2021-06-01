@@ -100,8 +100,8 @@ npm run serve
 ### Client (mobile)
 
 - [ ] Authentication
-    - [ ] Login
+    - [x] Login / Logout
     - [ ] Sign up
-- [ ] Chatbot
-    - [ ] Send a message
-    - [ ] Receive a response with its propositions
+- [x] Chatbot
+    - [x] Send a message
+    - [x] Receive a response with its propositions
