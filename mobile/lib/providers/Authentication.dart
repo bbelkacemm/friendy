@@ -18,10 +18,37 @@ class Authentication with ChangeNotifier {
       }),
       headers: {"Content-Type": "application/json"},
     );
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       user = User.fromJson(jsonDecode(response.body));
     }
     notifyListeners();
+  }
+
+  Future<bool> signup({
+    String? username,
+    String? password,
+    String? firstName,
+    String? lastName,
+    DateTime? birthdate,
+    String? gender,
+  }) async {
+    var uri = Uri.http(URL, SIGN_UP);
+    var response = await http.post(
+      uri,
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+        'first_name': firstName,
+        'last_name': lastName,
+        'birth_date': birthdate.toString(),
+        'gender': gender,
+      }),
+      headers: {"Content-Type": "application/json"},
+    );
+    if (response.statusCode == 201) {
+      return true;
+    }
+    return false;
   }
 
   void logout() {

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:mobile/models/Message.dart';
 import 'package:mobile/providers/Authentication.dart';
 import 'package:mobile/providers/Chat.dart';
 import 'package:mobile/widgets/ChatItem.dart';
@@ -37,63 +36,65 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Friendy',
-          style: TextStyle(color: Colors.blueAccent),
-        ),
-        actions: [
-          IconButton(
-            onPressed: displayProfile,
-            icon: CircleAvatar(
-              backgroundColor: Colors.grey.shade200,
-            ),
-            splashRadius: 20,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Friendy',
+            style: TextStyle(color: Colors.blueAccent),
           ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      backgroundColor: Colors.white,
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Consumer<Chat>(builder: (_, builder, __) {
-                  return Column(
-                    children: [
-                      for (var message in builder.messages)
-                        ChatItem(
-                          message: message,
-                        )
-                    ],
-                  );
-                }),
+          actions: [
+            IconButton(
+              onPressed: displayProfile,
+              icon: CircleAvatar(
+                backgroundColor: Colors.grey.shade200,
               ),
-            ),
-            Consumer<Chat>(builder: (_, builder, __) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var proposition in builder.propositions)
-                    PropositionItem(
-                        proposition: proposition, onPressed: sendProposition),
-                ],
-              );
-            }),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: InputField(
-                hint: 'What\'s on your mind?',
-                icon: Icons.send,
-                onPressed: sendMessage,
-                controller: _messageController,
-              ),
+              splashRadius: 20,
             ),
           ],
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+        backgroundColor: Colors.white,
+        body: Container(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Consumer<Chat>(builder: (_, builder, __) {
+                    return Column(
+                      children: [
+                        for (var message in builder.messages)
+                          ChatItem(
+                            message: message,
+                          )
+                      ],
+                    );
+                  }),
+                ),
+              ),
+              Consumer<Chat>(builder: (_, builder, __) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var proposition in builder.propositions)
+                      PropositionItem(
+                          proposition: proposition, onPressed: sendProposition),
+                  ],
+                );
+              }),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: InputField(
+                  hint: 'What\'s on your mind?',
+                  icon: Icons.send,
+                  onPressed: sendMessage,
+                  controller: _messageController,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -133,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: Text(
-                        _authentication.user!.getFullName() ?? '',
+                        _authentication.user!.getFullName(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -151,8 +152,12 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                         Icon(
-                          _authentication.user!.isMale() ? Icons.male : Icons.female,
-                          color: _authentication.user!.isMale() ? Colors.blue : Colors.pink,
+                          _authentication.user!.isMale()
+                              ? Icons.male
+                              : Icons.female,
+                          color: _authentication.user!.isMale()
+                              ? Colors.blue
+                              : Colors.pink,
                         ),
                       ],
                     ),

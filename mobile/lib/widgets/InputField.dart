@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
 typedef OnPressed = void Function();
+typedef Validator = String? Function(String? value);
 
-class InputField extends StatelessWidget {
+class InputField extends StatefulWidget {
   final String hint;
   final IconData? icon;
   final bool obscureText;
+  final bool readOnly;
   final OnPressed? onPressed;
   final TextEditingController controller;
+  final Validator? validator;
 
   const InputField({
     Key? key,
@@ -16,8 +19,15 @@ class InputField extends StatelessWidget {
     required this.hint,
     this.icon,
     this.obscureText = false,
+    this.readOnly = false,
+    this.validator,
   }) : super(key: key);
 
+  @override
+  _InputFieldState createState() => _InputFieldState();
+}
+
+class _InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,26 +40,31 @@ class InputField extends StatelessWidget {
           Expanded(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 32, vertical: 4),
-              child: TextField(
-                obscureText: obscureText,
-                controller: controller,
+              child: TextFormField(
+                readOnly: widget.readOnly,
+                obscureText: widget.obscureText,
+                controller: widget.controller,
+                validator: widget.validator,
                 decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: hint,
+                  hintText: widget.hint,
                   hintStyle: TextStyle(color: Colors.grey.shade400),
                 ),
               ),
             ),
           ),
-          if (icon != null)
-            IconButton(
-              onPressed: onPressed,
-              icon: Icon(
-                icon,
-                color: Colors.blueAccent,
+          if (widget.icon != null)
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
+                onPressed: widget.onPressed,
+                icon: Icon(
+                  widget.icon,
+                  color: Colors.blueAccent,
+                ),
+                highlightColor: Colors.white,
+                splashColor: Colors.white,
               ),
-              highlightColor: Colors.white,
-              splashColor: Colors.white,
             )
         ],
       ),

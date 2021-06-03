@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mobile/providers/Authentication.dart';
+import 'package:mobile/screens/sign_up_screen.dart';
 import 'package:mobile/widgets/InputField.dart';
 import 'package:provider/provider.dart';
 
@@ -30,58 +31,63 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.all(4),
-                child: InputField(
-                  hint: AppLocalizations.of(context)!.username.toUpperCase(),
-                  controller: _usernameController,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(4),
-                child: InputField(
-                  hint: AppLocalizations.of(context)!.password.toUpperCase(),
-                  obscureText: true,
-                  controller: _passwordController,
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    margin: EdgeInsets.all(4),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        AppLocalizations.of(context)!.signup.toUpperCase(),
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.all(4),
+                  child: InputField(
+                    hint: AppLocalizations.of(context)!.username.toUpperCase(),
+                    controller: _usernameController,
                   ),
-                  Expanded(
-                    child: Container(
+                ),
+                Container(
+                  margin: EdgeInsets.all(4),
+                  child: InputField(
+                    hint: AppLocalizations.of(context)!.password.toUpperCase(),
+                    obscureText: true,
+                    controller: _passwordController,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Container(
                       margin: EdgeInsets.all(4),
-                      child: OutlinedButton(
-                        onPressed: login,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+                        },
                         child: Text(
-                          AppLocalizations.of(context)!.login.toUpperCase(),
+                          AppLocalizations.of(context)!.signup.toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
-                  )
-                ],
-              )
-            ],
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(4),
+                        child: OutlinedButton(
+                          onPressed: login,
+                          child: Text(
+                            AppLocalizations.of(context)!.login.toUpperCase(),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
+        backgroundColor: Colors.white,
       ),
     );
   }
