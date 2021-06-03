@@ -99,10 +99,10 @@ npm run serve
 
 ### Client (mobile)
 
-- [ ] Authentication
+- [x] Authentication
     - [x] Login / Logout
     - [x] Sign up
-    - [ ] Guest mode
+    - [x] Guest mode
 - [x] Chatbot
     - [x] Send a message
     - [x] Receive a response with its propositions
