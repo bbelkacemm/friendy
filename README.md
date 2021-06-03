@@ -101,7 +101,8 @@ npm run serve
 
 - [ ] Authentication
     - [x] Login / Logout
-    - [ ] Sign up
+    - [x] Sign up
+    - [ ] Guest mode
 - [x] Chatbot
     - [x] Send a message
     - [x] Receive a response with its propositions
