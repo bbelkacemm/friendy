@@ -68,21 +68,59 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.grey,
                           ),
                         ),
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(64),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Expanded(
                       child: Container(
                         margin: EdgeInsets.all(4),
-                        child: OutlinedButton(
+                        child: ElevatedButton(
                           onPressed: login,
                           child: Text(
                             AppLocalizations.of(context)!.login.toUpperCase(),
+                          ),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(64),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     )
                   ],
-                )
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                  child: TextButton(
+                    onPressed: () {
+                      _authentication.loginAsGuest();
+                    },
+                    child: Text(
+                      'Login as a guest'.toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<
+                          RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(64),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

@@ -24,6 +24,17 @@ class Authentication with ChangeNotifier {
     notifyListeners();
   }
 
+  void loginAsGuest() {
+    user = User(
+      'guest.guest',
+      'Guest',
+      'Guest',
+      'm',
+      DateTime.now(),
+    );
+    notifyListeners();
+  }
+
   Future<bool> signup({
     String? username,
     String? password,
