@@ -81,7 +81,8 @@ def signup():
 
         try:
             role = Role.query.filter_by(label='client').first()
-            database.session.add(User(username, password, first_name, last_name, birth_date, gender, role_id=role.id))
+            database.session.add(User(username=username, password=password, first_name=first_name, last_name=last_name,
+                                      birth_date=birth_date, gender=gender, role_id=role.id))
             database.session.commit()
             return 'signupSuccess', 201
         except Exception as exception:
