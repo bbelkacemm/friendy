@@ -80,6 +80,12 @@ npm run serve
     - [ ] Edit contribution
     - [ ] Delete contribution
     - [ ] Validate contribution
+- [x] Neural Network Models
+    - [x] Display models
+    - [x] Edit model's state (enabled or disabled)
+    - [x] Edit model's tag (used in development or in production)
+    - [x] Delete model  (both files and database record)
+    - [x] Choose which mode to use in the chatbot
 - [ ] Contexts
     - [x] Display valid contexts
     - [ ] Display details of a context 
