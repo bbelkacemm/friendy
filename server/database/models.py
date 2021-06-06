@@ -220,3 +220,27 @@ class Response(database.Model):
         for item in data:
             responses.append(Response(label=item['label'], language=item['language']))
         return responses
+
+
+class Model(database.Model):
+    __tablename__ = 'models'
+    path = Column(String, nullable=False, primary_key=True)
+    state = Column(Enum('enabled', 'disabled', name="model_states"), nullable=False, default='disabled',
+                   primary_key=True)
+    tag = Column(Enum('dev', 'prod', 'none', name="model_tags"), nullable=False, default='none', primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
+
+    user = database.relationship('User', back_populates='models')
+
+    def as_dict(self):
+        return dict({
+            'path': self.path,
+            'state': self.state,
+            'tag': self.tag,
+            'createdAt': self.created_at,
+            'user': self.user.as_dict(),
+        })
+
+
+User.models = database.relationship('Model')

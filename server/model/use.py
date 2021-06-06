@@ -77,7 +77,7 @@ def predict_class(user_input, model, words, classes):
     return result
 
 
-def generate_response(user_input, lang):
+def generate_response(user_input, lang, tag):
     """
     Loads model/data based on the user's preferred language from the database,
     call @predict_class function,
@@ -87,11 +87,15 @@ def generate_response(user_input, lang):
     :param lang: the language chosen by the user
     :return: an object containing the response and the recommended prepositions
     """
+
+    #
+    m = Model.query.filter_by(state='enabled', tag=tag).first()
+
     # LOAD NECESSARY DATA
-    words = pickle.load(open(f'{Path().absolute()}/server/model/output/words_{lang}.pkl', 'rb'))
-    classes = pickle.load(open(f'{Path().absolute()}/server/model/output/classes_{lang}.pkl', 'rb'))
+    words = pickle.load(open(f'{Path().absolute()}/server/model/output/{m.path}/words_{lang}.pkl', 'rb'))
+    classes = pickle.load(open(f'{Path().absolute()}/server/model/output/{m.path}/classes_{lang}.pkl', 'rb'))
     # LOAD MODEL
-    model = load_model(f'{Path().absolute()}/server/model/output/model_{lang}.h5')
+    model = load_model(f'{Path().absolute()}/server/model/output/{m.path}/model_{lang}.h5')
     # PREDICT CLASS
     predictions = predict_class(user_input, model, words, classes)
     response = 'Error'

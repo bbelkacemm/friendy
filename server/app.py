@@ -1,3 +1,6 @@
+import shutil
+
+from pathlib import Path
 from flask import Flask, jsonify, make_response
 from flask import request
 from flask_migrate import Migrate
@@ -32,8 +35,10 @@ initialize_database()
 def chat():
     lang = request.args.get('lang')
     user_input = request.args.get('user-input')
+    tag = request.args.get('tag')
+
     try:
-        response = generate_response(user_input=user_input, lang=lang)
+        response = generate_response(user_input=user_input, lang=lang, tag=tag)
         return response, 200
     except Exception as exception:
         print(exception)
@@ -44,9 +49,13 @@ def chat():
 @app.route('/dashboard/train', methods=['POST'])
 def train():
     # TODO ADD FR, AR
+    data = request.get_json()
+
+    user_id = data['user_id']
+
     languages = ['en']
     for lang in languages:
-        train_model(lang)
+        train_model(lang, user_id)
     return 'trainingCompleted', 200
 
 
@@ -283,6 +292,64 @@ def get_contexts(status):
         try:
             result = database.session.query(Contribution).filter_by(status=status).all()
             return make_response(jsonify([c.context.as_dict() for c in result]), 200)
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 400
+
+
+@app.route('/models', methods=['GET'])
+def get_models():
+    if request.method == 'GET':
+        try:
+            models = Model.query.all()
+            return make_response(jsonify([model.as_dict() for model in models]), 200)
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 400
+
+
+# UPDATE MODEL
+@app.route('/models/model/<path>', methods=['POST'])
+def edit_model(path):
+    if request.method == 'POST':
+        data = request.get_json()
+
+        state = data['state']
+        tag = data['tag']
+
+        try:
+            model = Model.query.filter_by(path=path).first()
+            if state is not None:
+                model.state = state
+                if model.state == 'disabled':
+                    model.tag = 'none'
+                if model.state == 'enabled' and model.tag == 'none':
+                    model.tag = 'dev'
+            if tag is not None:
+                model.tag = tag
+
+            database.session.commit()
+
+            return model.as_dict(), 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 400
+
+
+# DELETE MODEL
+@app.route('/models/model/<path>', methods=['DELETE'])
+def delete_model(path):
+    if request.method == 'DELETE':
+        try:
+            model = Model.query.filter_by(path=path).first()
+
+            database.session.delete(model)
+            database.session.commit()
+
+            # DELETE FOLDER USING PATH
+            shutil.rmtree(f'{Path().absolute()}/server/model/output/{path}')
+
+            return 'OK', 200
         except SQLAlchemyError as exception:
             print(exception)
             return 400

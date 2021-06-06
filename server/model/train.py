@@ -4,6 +4,8 @@ import string
 import pickle
 import numpy as np
 import nltk
+import time
+
 from pathlib import Path
 from server.database.models import *
 from nltk.stem import WordNetLemmatizer
@@ -79,7 +81,7 @@ def get_label(lang, context):
     return label
 
 
-def train_model(lang):
+def train_model(lang, user_id):
     """
     Prepare data,
     save words/classes,
@@ -88,6 +90,8 @@ def train_model(lang):
 
     :return: None
     """
+
+    folder_name = str(time.time())
 
     # PREPARE DATA
     classes = get_classes(lang=lang)
@@ -118,10 +122,11 @@ def train_model(lang):
     train_y = list(training[:, 1])
 
     # SAVE WORDS/CLASSES
-    if not os.path.exists('server/model/output'):
-        os.mkdir('server/model/output')
-    pickle.dump(words, open(f'{Path().absolute()}/server/model/output/words_{lang}.pkl', 'wb'))
-    pickle.dump(classes, open(f'{Path().absolute()}/server/model/output/classes_{lang}.pkl', 'wb'))
+    path = f'server/model/output/{folder_name}'
+    if not os.path.exists(path):
+        os.mkdir(path)
+    pickle.dump(words, open(f'{Path().absolute()}/{path}/words_{lang}.pkl', 'wb'))
+    pickle.dump(classes, open(f'{Path().absolute()}/{path}/classes_{lang}.pkl', 'wb'))
 
     # CREATE/TRAIN/SAVE MODEL
     model = Sequential()
@@ -135,4 +140,8 @@ def train_model(lang):
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
     result = model.fit(x=np.array(train_x), y=np.array(train_y), batch_size=4, epochs=200, verbose=1)
-    model.save(f'{Path().absolute()}/server/model/output/model_{lang}.h5', result)
+    model.save(f'{Path().absolute()}/{path}/model_{lang}.h5', result)
+
+    # SAVE MODEL RECORD
+    database.session.add(Model(path=folder_name, user_id=user_id))
+    database.session.commit()
