@@ -10,6 +10,7 @@ import Patterns from '@/store/modules/Patterns'
 import Responses from '@/store/modules/Responses'
 import Contexts from '@/store/modules/Contexts'
 import Contributions from '@/store/modules/Contributions'
+import Models from '@/store/modules/Models'
 
 Vue.use(Vuex)
 
@@ -27,6 +28,7 @@ export default new Vuex.Store({
         contexts: Contexts,
         patterns: Patterns,
         responses: Responses,
+        models: Models,
     },
     plugins: [
         createPersistedState(),

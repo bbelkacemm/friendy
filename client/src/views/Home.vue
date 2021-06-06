@@ -1,6 +1,16 @@
 <template>
     <v-container fluid v-if="user" class="fill-height">
         <div id="chat-bot-container" class="fill-height elevation-4">
+            <div class="pa-4 grey lighten-4">
+                <v-row no-gutters id="chat-header">
+                    <v-col class="title text-uppercase font-weight-bold grey--text lighten-1">
+                        {{ $t('mode') }} {{ mode.text }}
+                    </v-col>
+                    <v-col>
+                        <v-switch class="ma-0" v-model="isProd" color="success" inset hide-details></v-switch>
+                    </v-col>
+                </v-row>
+            </div>
             <div id="messages-container">
                 <template v-for="(item, index) in messages">
                     <message :key="index" :value="item.value" :sender="item.sender"/>
@@ -51,9 +61,22 @@ export default {
         return {
             message: null,
             isTyping: false,
+            isProd: true,
         }
     },
     computed: {
+        mode: function () {
+            if (this.isProd)
+                return {
+                    text: this.$t('prod'),
+                    value: 'prod',
+                }
+            else
+                return {
+                    text: this.$t('dev'),
+                    value: 'dev',
+                }
+        },
         ...mapGetters('messages', ['messages']),
         ...mapGetters('propositions', ['propositions']),
     },
@@ -74,6 +97,7 @@ export default {
             const response = await get('/', {
                 'lang': 'en',
                 'user-input': message,
+                'tag': this.mode.value,
             })
             if (response !== 'responseError') {
                 this.addMessage({
@@ -98,12 +122,16 @@ export default {
 
 <style scoped lang="sass">
 
+#chat-header
+    display: grid
+    grid-template-columns: 1fr auto
+
 #chat-bot-container
     margin-left: 150px
     margin-right: 150px
     width: 100%
     display: grid
-    grid-template-rows: 1fr auto auto
+    grid-template-rows: auto 1fr auto auto
 
 #input-grid
     display: grid

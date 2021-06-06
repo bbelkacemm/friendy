@@ -30,3 +30,15 @@ export async function get(path, data) {
         return error.response.data
     }
 }
+
+export async function remove(path) {
+    const url = `${ADDRESS}${path}`
+    try {
+        const response = await axios.delete(url)
+        if (response.status === 200) {
+            return true
+        }
+    } catch (error) {
+        return false
+    }
+}

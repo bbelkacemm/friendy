@@ -11,6 +11,7 @@ import Contexts from '@/views/Contexts'
 import Dashboard from '@/views/Dashboard'
 import Contributions from '@/views/Contributions'
 import NotFound from '@/views/NotFound'
+import Models from '@/views/Models'
 
 Vue.use(VueRouter)
 
@@ -61,6 +62,11 @@ const routes = [
         component: Contexts,
     },
     {
+        path: '/models',
+        name: 'models',
+        component: Models,
+    },
+    {
         path: '/not-found',
         name: 'notFound',
         component: NotFound,
@@ -75,7 +81,7 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     if (!routes.map(route => route.path).includes(to.path)) {
-        return await router.push({name: 'notFound'})
+        return await router.push({ name: 'notFound' })
     }
     if (!['home', 'login', 'signup'].includes(to.name)) {
         if (!store.getters['authentication/user']) {

@@ -14,7 +14,9 @@ export default {
     name: 'Dashboard',
     methods: {
         trainModel: async function () {
-            const result = await post('/dashboard/train')
+            const result = await post('/dashboard/train', {
+                'user_id': this.user.id,
+            })
             if (result) {
                 // TODO DISPLAY A SNACKBAR
             }

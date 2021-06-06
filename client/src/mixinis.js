@@ -41,10 +41,12 @@ Vue.mixin({
         ...mapGetters('authentication', ['user']),
     },
     methods: {
-        formatDate: function (date) {
+        formatDate: function (date, hours = false) {
+            let format = 'MMMM Do YYYY'
+            if (hours) format = 'MMMM Do YYYY HH:mm'
             if (date) {
                 moment.locale('fr')
-                return moment(date).format('MMMM Do YYYY')
+                return moment.utc(date).format(format)
             }
         },
         formatDateForDatePicker: function (date) {
@@ -55,6 +57,10 @@ Vue.mixin({
         capitalizeFirst(value) {
             if (typeof value !== 'string') return ''
             return value.charAt(0).toUpperCase() + value.slice(1)
+        },
+        getFullName(user) {
+            if (!user) return ''
+            return `${user.firstName} ${user.lastName}`
         },
     },
 })

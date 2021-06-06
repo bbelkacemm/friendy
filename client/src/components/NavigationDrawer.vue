@@ -80,6 +80,14 @@ export default {
                         this.setRoles()
                     },
                 },
+                {
+                    icon: 'mdi-brain',
+                    link: 'models',
+                    label: 'models',
+                    initialize: () => {
+                        this.setModels()
+                    },
+                },
             ],
             contribution: [
                 {
@@ -120,6 +128,7 @@ export default {
         ...mapActions('roles', ['setRoles']),
         ...mapActions('contributions', ['getContributions']),
         ...mapActions('contexts', ['getContexts']),
+        ...mapActions('models', ['setModels']),
         ...mapMutations('authentication', ['RESET_AUTHENTICATION_STATE']),
         ...mapMutations('contributions', ['RESET_CONTRIBUTIONS_STATE']),
         ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
