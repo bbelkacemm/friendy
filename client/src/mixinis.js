@@ -46,7 +46,7 @@ Vue.mixin({
             if (hours) format = 'MMMM Do YYYY HH:mm'
             if (date) {
                 moment.locale('fr')
-                return moment.utc(date).format(format)
+                return moment(date).format(format)
             }
         },
         formatDateForDatePicker: function (date) {

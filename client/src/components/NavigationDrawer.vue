@@ -60,7 +60,7 @@ export default {
                     link: 'dashboard',
                     label: 'dashboard',
                     initialize: () => {
-
+                        this.setModels()
                     },
                 },
                 {
