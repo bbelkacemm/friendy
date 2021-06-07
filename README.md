@@ -69,7 +69,8 @@ npm run serve
     - [ ] Sign up demand (contributor)
 - [ ] Dashboard
     - [x] Train model
-    - [ ] Statistics
+    - [x] Display training state
+    - [x] Display last trained model's date
 - [x] Chatbot
     - [x] Send a message
     - [x] Receive a response with its propositions
