@@ -1,4 +1,6 @@
 import datetime
+
+import sqlalchemy.sql.functions
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 
@@ -229,7 +231,7 @@ class Model(database.Model):
                    primary_key=True)
     tag = Column(Enum('dev', 'prod', 'none', name="model_tags"), nullable=False, default='none', primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    created_at = Column(DateTime(timezone=True), default=datetime.datetime.now(), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=sqlalchemy.sql.functions.now(), nullable=False)
 
     user = database.relationship('User', back_populates='models')
 
