@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1278@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:1278@localhost:5433/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_SIZE'] = 20
 
@@ -207,9 +207,13 @@ def update_role(id):
                 if permission['status'] == 'edit':
                     p = Permission.query.filter_by(id=permission['id']).first()
                     p.label = permission['label']
+                    p.can_create_all = permission['canCreateAll']
                     p.can_create = permission['canCreate']
+                    p.can_read_all = permission['canReadAll']
                     p.can_read = permission['canRead']
+                    p.can_update_all = permission['canUpdateAll']
                     p.can_update = permission['canUpdate']
+                    p.can_delete_all = permission['canDeleteAll']
                     p.can_delete = permission['canDelete']
                 elif permission['status'] == 'delete':
                     Permission.query.filter_by(id=permission['id']).delete()
@@ -228,6 +232,22 @@ def update_role(id):
         except Exception as exception:
             print(exception)
             return 'editError', 400
+
+
+# DELETE ROLE
+@app.route('/roles/role/<id>', methods=['DELETE'])
+def delete_role(id):
+    if request.method == 'DELETE':
+        try:
+            role = Role.query.filter_by(id=id).first()
+
+            database.session.delete(role)
+            database.session.commit()
+
+            return 'OK', 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 400
 
 
 # CONTRIBUTIONS

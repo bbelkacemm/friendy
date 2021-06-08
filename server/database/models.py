@@ -19,7 +19,7 @@ class Role(database.Model):
     label = Column(String, unique=True)
 
     users = database.relationship('User')
-    permissions = database.relationship('Permission')
+    permissions = database.relationship('Permission', cascade='all')
 
     def as_dict(self):
         return dict({
@@ -33,9 +33,13 @@ class Permission(database.Model):
     __tablename__ = 'permissions'
     id = Column(Integer, primary_key=True)
     label = Column(String)
+    can_create_all = Column(Boolean, default=False)
     can_create = Column(Boolean, default=False)
+    can_read_all = Column(Boolean, default=False)
     can_read = Column(Boolean, default=False)
+    can_update_all = Column(Boolean, default=False)
     can_update = Column(Boolean, default=False)
+    can_delete_all = Column(Boolean, default=False)
     can_delete = Column(Boolean, default=False)
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
@@ -43,9 +47,13 @@ class Permission(database.Model):
         return dict({
             'id': self.id,
             'label': self.label,
+            'canReadAll': self.can_read_all,
             'canRead': self.can_read,
+            'canCreateAll': self.can_create_all,
             'canCreate': self.can_create,
+            'canUpdateAll': self.can_update_all,
             'canUpdate': self.can_update,
+            'canDeleteAll': self.can_delete_all,
             'canDelete': self.can_delete,
         })
 
@@ -55,9 +63,13 @@ class Permission(database.Model):
         for permission in data:
             permissions.append(Permission(
                 label=permission['label'],
+                can_create_all=permission['canCreateAll'],
                 can_create=permission['canCreate'],
+                can_read_all=permission['canReadAll'],
                 can_read=permission['canRead'],
+                can_update_all=permission['canUpdateAll'],
                 can_update=permission['canUpdate'],
+                can_delete_all=permission['canDeleteAll'],
                 can_delete=permission['canDelete'],
             ))
         return permissions
