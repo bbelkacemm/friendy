@@ -97,12 +97,12 @@ npm run serve
     - [x] Add user
     - [x] Edit user
     - [ ] Delete user
-- [ ] Roles & Permissions
+- [x] Roles & Permissions
     - [x] Display roles/permissions
     - [x] Search for a role
     - [x] Add role/permission
     - [x] Edit role/permission
-    - [ ] Delete role/permission
+    - [x] Delete role/permission
 
 ### Client (mobile)
 
