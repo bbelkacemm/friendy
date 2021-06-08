@@ -12,7 +12,8 @@
                     {{ $t('edit') }}
                 </v-btn>
 
-                <v-btn plain :disabled="selectedRoles.length !== 1">
+                <v-btn plain :disabled="selectedRoles.length !== 1 || selectedRoles.length === 0"
+                       v-on:click="removeRole">
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
@@ -41,7 +42,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import RoleForm from '@/components/RoleForm'
 
 export default {
@@ -62,6 +63,13 @@ export default {
     },
     computed: {
         ...mapGetters('roles', ['roles']),
+    },
+    methods: {
+        removeRole: function () {
+            this.deleteRole(this.selectedRoles[0])
+            this.selectedRoles = []
+        },
+        ...mapActions('roles', ['deleteRole']),
     },
 }
 </script>

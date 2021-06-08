@@ -1,4 +1,4 @@
-import { get } from '@/helpers/HTTPHelper'
+import { get, remove } from '@/helpers/HTTPHelper'
 
 const state = {
     roles: [],
@@ -13,6 +13,9 @@ const mutations = {
     },
     EDIT_ROLE: function (state, { index, role }) {
         state.roles.splice(index, 1, role)
+    },
+    DELETE_ROLE: function (state, index) {
+        state.roles.splice(index, 1)
     },
     RESET_ROLES_STATE: function (state) {
         state.roles = []
@@ -32,6 +35,14 @@ const actions = {
             index: context.state.roles.findIndex(i => i.id === role.id),
             role: role,
         })
+    },
+    deleteRole: async function (context, role) {
+        const deleted = await remove(`/roles/role/${role.id}`)
+        if (deleted) {
+            context.commit('DELETE_ROLE', context.state.roles.findIndex(i => i.id === role.id))
+            return true
+        }
+        return false
     },
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" overlay-opacity=".1" scrollable width="75%" persistent>
+    <v-dialog v-model="dialog" overlay-opacity=".1" scrollable width="85%" persistent>
         <template v-slot:activator="{ on, attrs }">
             <v-btn plain v-bind="attrs" v-on="on" v-if="add">
                 <v-icon left>mdi-plus</v-icon>
@@ -23,7 +23,8 @@
                 <v-card-text>
                     <v-container fluid class="pa-0">
                         <v-text-field class="mb-2" v-model="roleLabel" :rules="[validationRules.required]"
-                                      outlined dense hide-details="auto" :label="$t('roleLabel').toUpperCase()"></v-text-field>
+                                      outlined dense hide-details="auto"
+                                      :label="$t('roleLabel').toUpperCase()"></v-text-field>
                     </v-container>
                     <v-form v-on:submit.prevent="" ref="permissionForm">
                         <v-container fluid id="permission-form" class="pa-0">
@@ -32,12 +33,20 @@
                                         hide-details="auto"
                                         :items="modules" outlined
                                         dense></v-combobox>
+                            <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canCreateAll"
+                                        :label="capitalizeFirst($t('createAll'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canCreate"
                                         :label="capitalizeFirst($t('create'))"></v-checkbox>
+                            <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canReadAll"
+                                        :label="capitalizeFirst($t('readAll'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canRead"
                                         :label="capitalizeFirst($t('read'))"></v-checkbox>
+                            <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canUpdateAll"
+                                        :label="capitalizeFirst($t('updateAll'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canUpdate"
                                         :label="capitalizeFirst($t('update'))"></v-checkbox>
+                            <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canDeleteAll"
+                                        :label="capitalizeFirst($t('deleteAll'))"></v-checkbox>
                             <v-checkbox class="pa-0 ma-0" hide-details="auto" v-model="canDelete"
                                         :label="capitalizeFirst($t('delete'))"></v-checkbox>
                             <v-btn @click="addPermission" icon color="primary" tile :disabled="selectedPermissions[0]">
@@ -61,16 +70,32 @@
                                       show-select
                                       single-select
                                       class="elevation-0">
+                            <template v-slot:item.canCreateAll="{item}">
+                                <v-icon v-if="item.canCreateAll">mdi-check</v-icon>
+                                <v-icon v-else>mdi-close</v-icon>
+                            </template>
                             <template v-slot:item.canCreate="{item}">
                                 <v-icon v-if="item.canCreate">mdi-check</v-icon>
+                                <v-icon v-else>mdi-close</v-icon>
+                            </template>
+                            <template v-slot:item.canReadAll="{item}">
+                                <v-icon v-if="item.canReadAll">mdi-check</v-icon>
                                 <v-icon v-else>mdi-close</v-icon>
                             </template>
                             <template v-slot:item.canRead="{item}">
                                 <v-icon v-if="item.canRead">mdi-check</v-icon>
                                 <v-icon v-else>mdi-close</v-icon>
                             </template>
+                            <template v-slot:item.canUpdateAll="{item}">
+                                <v-icon v-if="item.canUpdateAll">mdi-check</v-icon>
+                                <v-icon v-else>mdi-close</v-icon>
+                            </template>
                             <template v-slot:item.canUpdate="{item}">
                                 <v-icon v-if="item.canUpdate">mdi-check</v-icon>
+                                <v-icon v-else>mdi-close</v-icon>
+                            </template>
+                            <template v-slot:item.canDeleteAll="{item}">
+                                <v-icon v-if="item.canDeleteAll">mdi-check</v-icon>
                                 <v-icon v-else>mdi-close</v-icon>
                             </template>
                             <template v-slot:item.canDelete="{item}">
@@ -123,9 +148,13 @@ export default {
             roleLabel: null,
             permissionId: null,
             permissionLabel: null,
+            canCreateAll: false,
             canCreate: false,
+            canReadAll: false,
             canRead: false,
+            canUpdateAll: false,
             canUpdate: false,
+            canDeleteAll: false,
             canDelete: false,
             modules: [
                 'users',
@@ -134,6 +163,7 @@ export default {
                 'contexts',
                 'patterns',
                 'responses',
+                'models',
             ],
             headers: [
                 {
@@ -141,16 +171,32 @@ export default {
                     value: 'label',
                 },
                 {
+                    text: this.$t('createAll').toUpperCase(),
+                    value: 'canCreateAll',
+                },
+                {
                     text: this.$t('create').toUpperCase(),
                     value: 'canCreate',
+                },
+                {
+                    text: this.$t('readAll').toUpperCase(),
+                    value: 'canReadAll',
                 },
                 {
                     text: this.$t('read').toUpperCase(),
                     value: 'canRead',
                 },
                 {
+                    text: this.$t('updateAll').toUpperCase(),
+                    value: 'canUpdateAll',
+                },
+                {
                     text: this.$t('update').toUpperCase(),
                     value: 'canUpdate',
+                },
+                {
+                    text: this.$t('deleteAll').toUpperCase(),
+                    value: 'canDeleteAll',
                 },
                 {
                     text: this.$t('delete').toUpperCase(),
@@ -199,9 +245,13 @@ export default {
                     this.permissions.push({
                         'status': 'add',
                         'label': this.permissionLabel,
+                        'canCreateAll': this.canCreateAll,
                         'canCreate': this.canCreate,
+                        'canReadAll': this.canReadAll,
                         'canRead': this.canRead,
+                        'canUpdateAll': this.canUpdateAll,
                         'canUpdate': this.canUpdate,
+                        'canDeleteAll': this.canDeleteAll,
                         'canDelete': this.canDelete,
                     })
                     this.resetPermissionForm()
@@ -215,9 +265,13 @@ export default {
                     'status': this.permissionId ? 'edit' : 'add',
                     'id': this.permissionId,
                     'label': this.permissionLabel,
+                    'canCreateAll': this.canCreateAll,
                     'canCreate': this.canCreate,
+                    'canReadAll': this.canReadAll,
                     'canRead': this.canRead,
+                    'canUpdateAll': this.canUpdateAll,
                     'canUpdate': this.canUpdate,
+                    'canDeleteAll': this.canDeleteAll,
                     'canDelete': this.canDelete,
                 })
                 this.resetPermissionForm()
@@ -232,9 +286,13 @@ export default {
                     'status': 'delete',
                     'id': this.permissionId,
                     'label': this.permissionLabel,
+                    'canCreateAll': this.canCreateAll,
                     'canCreate': this.canCreate,
+                    'canReadAll': this.canReadAll,
                     'canRead': this.canRead,
+                    'canUpdateAll': this.canUpdateAll,
                     'canUpdate': this.canUpdate,
+                    'canDeleteAll': this.canDeleteAll,
                     'canDelete': this.canDelete,
                 })
             }
@@ -244,9 +302,13 @@ export default {
             if (value) {
                 this.permissionId = item.id
                 this.permissionLabel = item.label
+                this.canCreateAll = item.canCreateAll
                 this.canCreate = item.canCreate
+                this.canReadAll = item.canReadAll
                 this.canRead = item.canRead
+                this.canUpdateAll = item.canUpdateAll
                 this.canUpdate = item.canUpdate
+                this.canDeleteAll = item.canDeleteAll
                 this.canDelete = item.canDelete
             } else {
                 this.resetPermissionForm()
@@ -272,6 +334,6 @@ export default {
     align-items: center
     justify-content: center
     grid-gap: 10px
-    grid-template-columns: 1fr auto auto auto auto auto auto auto
+    grid-template-columns: 1fr repeat(11, auto)
 
 </style>
