@@ -67,6 +67,7 @@ Vue.mixin({
             return permission[action]
         },
         hasPrivilegesOf: function (label) {
+            if (!this.user) return false
             if (this.user.role.label === 'administrator') {
                 return true
             } else if (this.user.role.label === 'moderator') {

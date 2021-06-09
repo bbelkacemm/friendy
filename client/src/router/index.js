@@ -100,6 +100,9 @@ const router = new VueRouter({
 
 
 router.beforeEach(async (to, from, next) => {
+    if (['home', 'login', 'signup'].includes(to.name)) {
+        return next()
+    }
     const user = store.getters['authentication/user']
     const route = routes.find(route => route.name === to.name)
     if (!route.allowed.includes(user.role.label)) {
