@@ -103,6 +103,8 @@ npm run serve
     - [x] Add role/permission
     - [x] Edit role/permission
     - [x] Delete role/permission
+- [ ] Security
+    - [x] Protect routes
 
 ### Client (mobile)
 
