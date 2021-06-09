@@ -36,18 +36,11 @@
             </v-list-item-group>
 
         </v-list>
-
-        <template v-slot:append>
-            <v-btn @click="logout" block tile elevation="0" class="error">
-                <v-icon left>mdi-logout</v-icon>
-                {{ $t('logout') }}
-            </v-btn>
-        </template>
     </v-navigation-drawer>
 </template>
 
 <script>
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
     name: 'NavigationDrawer',
@@ -120,34 +113,12 @@ export default {
         },
     },
     methods: {
-        logout: async function () {
-            this.RESET_AUTHENTICATION_STATE()
-            this.RESET_CONTRIBUTIONS_STATE()
-            this.RESET_CONTEXTS_STATE()
-            this.RESET_MESSAGES_STATE()
-            this.RESET_PATTERNS_STATE()
-            this.RESET_PROPOSITION_STATE()
-            this.RESET_RESPONSES_STATE()
-            this.RESET_ROLES_STATE()
-            this.RESET_USERS_STATE()
-            this.$emit('logout')
-            await this.$router.push({ name: 'home' })
-        },
         ...mapActions('authentication', ['setUser']),
         ...mapActions('users', ['getUsers']),
         ...mapActions('roles', ['setRoles']),
         ...mapActions('contributions', ['getContributions']),
         ...mapActions('contexts', ['getContexts']),
         ...mapActions('models', ['setModels']),
-        ...mapMutations('authentication', ['RESET_AUTHENTICATION_STATE']),
-        ...mapMutations('contributions', ['RESET_CONTRIBUTIONS_STATE']),
-        ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
-        ...mapMutations('messages', ['RESET_MESSAGES_STATE']),
-        ...mapMutations('patterns', ['RESET_PATTERNS_STATE']),
-        ...mapMutations('propositions', ['RESET_PROPOSITION_STATE']),
-        ...mapMutations('responses', ['RESET_RESPONSES_STATE']),
-        ...mapMutations('roles', ['RESET_ROLES_STATE']),
-        ...mapMutations('users', ['RESET_USERS_STATE']),
     },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <v-container fluid v-if="user" class="fill-height">
         <div id="chat-bot-container" class="fill-height elevation-4">
-            <div class="pa-4 grey lighten-4">
+            <div class="pa-4 grey lighten-4" v-if="hasPrivilegesOf('contributor')">
                 <v-row no-gutters id="chat-header">
                     <v-col class="title text-uppercase font-weight-bold grey--text lighten-1">
                         {{ $t('mode') }} {{ mode.text }}
