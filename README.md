@@ -87,9 +87,9 @@ npm run serve
     - [x] Edit model's tag (used in development or in production)
     - [x] Delete model  (both files and database record)
     - [x] Choose which mode to use in the chatbot
-- [ ] Contexts
+- [x] Contexts
     - [x] Display valid contexts
-    - [ ] Display details of a context 
+    - [x] Display details of a context 
     - [x] Search for a context
 - [x] Users
     - [x] Display users
