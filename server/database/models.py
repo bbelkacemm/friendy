@@ -86,6 +86,8 @@ class User(database.Model):
     gender = Column(Enum('f', 'm', name="gender"))
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
+    role = database.relationship('Role', back_populates='users')
+
     def as_dict(self):
         return dict({
             "id": self.id,
@@ -94,7 +96,7 @@ class User(database.Model):
             "lastName": self.last_name,
             "birthdate": self.birth_date,
             "gender": self.gender,
-            "roleId": self.role_id
+            "role": self.role.as_dict(),
         })
 
 
