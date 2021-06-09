@@ -1,15 +1,29 @@
 <template>
     <v-container fluid>
+        <v-toolbar dense elevation="0" class="primary" dark>
+            <v-toolbar-title></v-toolbar-title>
+            <v-toolbar-items>
+                <!-- DETAILS -->
+                <context v-if="selectedContexts[0]" :context="selectedContexts[0]" v-on:close="clearSelection"/>
+                <v-btn v-else plain disabled>
+                    <v-icon left>mdi-file-document</v-icon>
+                    {{ $t('details') }}
+                </v-btn>
+            </v-toolbar-items>
+        </v-toolbar>
+
         <v-data-table :headers="headers"
                       :items="contexts"
                       :items-per-page="15"
                       v-model="selectedContexts"
                       :search="search"
                       show-select
+                      single-select
                       class="elevation-1">
             <template v-slot:top>
                 <v-container fluid>
-                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense outlined>
+                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
+                                  outlined>
                         <template v-slot:append>
                             <v-icon>mdi-magnify</v-icon>
                         </template>
@@ -22,9 +36,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Context from '@/components/Context'
 
 export default {
     name: 'Contexts',
+    components: { Context },
     data: function () {
         return {
             headers: [
@@ -65,6 +81,11 @@ export default {
     computed: {
         ...mapGetters('contexts', ['contexts']),
     },
+    methods: {
+        clearSelection: function () {
+            this.selectedContexts = []
+        }
+    }
 }
 </script>
 
