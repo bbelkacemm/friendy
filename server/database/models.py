@@ -178,6 +178,9 @@ class Context(database.Model):
             "proposition_en": self.proposition_en,
             "proposition_fr": self.proposition_fr,
             "proposition_ar": self.proposition_ar,
+            "patterns": [pattern.as_dict() for pattern in self.patterns],
+            "responses": [response.as_dict() for response in self.responses],
+            "contexts": [context.as_dict() for context in self.contexts],
         })
 
     @staticmethod
@@ -206,7 +209,8 @@ class Pattern(database.Model):
     def as_dict(self):
         return dict({
             'id': self.id,
-            'label': self.label
+            'label': self.label,
+            'language': self.language
         })
 
     @staticmethod
@@ -227,7 +231,8 @@ class Response(database.Model):
     def as_dict(self):
         return dict({
             'id': self.id,
-            'label': self.label
+            'label': self.label,
+            'language': self.language
         })
 
     @staticmethod
