@@ -91,12 +91,12 @@ npm run serve
     - [x] Display valid contexts
     - [ ] Display details of a context 
     - [x] Search for a context
-- [ ] Users
+- [x] Users
     - [x] Display users
     - [x] Search for a user
     - [x] Add user
     - [x] Edit user
-    - [ ] Delete user
+    - [x] Delete user
 - [x] Roles & Permissions
     - [x] Display roles/permissions
     - [x] Search for a role
