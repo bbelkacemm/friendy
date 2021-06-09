@@ -161,6 +161,25 @@ def update_user(id):
             return 'updateError', 400
 
 
+# DELETE USER
+@app.route('/users/user/<id>', methods=['DELETE'])
+def delete_user(id):
+    if request.method == 'DELETE':
+        try:
+            user = User.query.filter_by(id=id).first()
+
+            database.session.delete(user)
+            database.session.commit()
+
+            return 'OK', 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 'deleteErrorRelatedEntities', 400
+        except Exception as exception:
+            print(exception)
+            return 'deleteError', 400
+
+
 # ROLES
 @app.route('/roles', methods=['GET'])
 def get_roles():
