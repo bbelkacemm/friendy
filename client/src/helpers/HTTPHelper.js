@@ -36,9 +36,14 @@ export async function remove(path) {
     try {
         const response = await axios.delete(url)
         if (response.status === 200) {
-            return true
+            return {
+                value: true,
+            }
         }
     } catch (error) {
-        return false
+        return {
+            value: false,
+            message: error.response.data,
+        }
     }
 }

@@ -15,7 +15,8 @@
                 </v-btn>
 
                 <!-- DELETE -->
-                <v-btn plain :disabled="selectedUsers.length !== 1">
+                <v-btn plain :disabled="selectedUsers.length !== 1 || selectedUsers.length === 0"
+                       v-on:click="removeUser">
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
@@ -59,11 +60,22 @@
             </template>
 
         </v-data-table>
+
+        <v-snackbar v-model="errorSnackbar" class="d-print-none" color="error">
+            <template v-slot:default>
+                {{ $t(errorMessage) }}
+            </template>
+            <template v-slot:action>
+                <v-btn icon dark @click="errorSnackbar = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import UserForm from '@/components/UserForm'
 
 export default {
@@ -96,10 +108,23 @@ export default {
             selectedUsers: [],
             formKey: 0,
             search: null,
+            errorSnackbar: false,
+            errorMessage: null,
         }
     },
     computed: {
         ...mapGetters('users', ['users']),
+    },
+    methods: {
+        removeUser: async function () {
+            const result = await this.deleteUser(this.selectedUsers[0])
+            if (!result.value) {
+                this.errorSnackbar = true
+                this.errorMessage = result.message
+            }
+            this.selectedUsers = []
+        },
+        ...mapActions('users', ['deleteUser']),
     },
 }
 </script>

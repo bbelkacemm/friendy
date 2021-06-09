@@ -1,4 +1,4 @@
-import { get } from '@/helpers/HTTPHelper'
+import { get, remove } from '@/helpers/HTTPHelper'
 
 const state = {
     users: [],
@@ -19,7 +19,7 @@ const mutations = {
     },
     RESET_USERS_STATE: function (state) {
         state.users = []
-    }
+    },
 }
 
 const actions = {
@@ -35,6 +35,15 @@ const actions = {
             index: context.state.users.findIndex(item => item.id === user.id),
             user: user,
         })
+    },
+    deleteUser: async function (context, user) {
+        const deleted = await remove(`/users/user/${user.id}`)
+        if (deleted.value === true) {
+            context.commit('DELETE_USER', context.state.users.findIndex(item => item.id === user.id))
+            return true
+        } else {
+            return deleted
+        }
     },
 }
 

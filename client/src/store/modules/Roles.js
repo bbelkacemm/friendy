@@ -38,7 +38,7 @@ const actions = {
     },
     deleteRole: async function (context, role) {
         const deleted = await remove(`/roles/role/${role.id}`)
-        if (deleted) {
+        if (deleted.value === true) {
             context.commit('DELETE_ROLE', context.state.roles.findIndex(i => i.id === role.id))
             return true
         }

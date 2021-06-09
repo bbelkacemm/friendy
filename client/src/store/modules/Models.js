@@ -39,7 +39,7 @@ const actions = {
     },
     deleteModel: async function (context, model) {
         const deleted = await remove(`/models/model/${model.path}`)
-        if (deleted) {
+        if (deleted.value === true) {
             context.commit('DELETE_MODEL', context.state.models.findIndex(i => i.path === model.path))
         }
     },
