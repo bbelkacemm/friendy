@@ -14,7 +14,8 @@
             <v-subheader>{{ $t('administration').toUpperCase() }}</v-subheader>
 
             <v-list-item-group>
-                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in admin" :to="item.link">
+                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in admin" :to="item.link"
+                             :disabled="!item.canUse">
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -25,7 +26,8 @@
             <v-subheader>{{ $t('contribution').toUpperCase() }}</v-subheader>
 
             <v-list-item-group>
-                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in contribution" :to="item.link">
+                <v-list-item @click="item.initialize" :key="index" v-for="(item,index) in contribution" :to="item.link"
+                             :disabled="!item.canUse">
                     <v-list-item-icon>
                         <v-icon>{{ item.icon }}</v-icon>
                     </v-list-item-icon>
@@ -52,13 +54,14 @@ export default {
     props: {
         drawer: Boolean,
     },
-    data: function () {
-        return {
-            admin: [
+    computed: {
+        admin: function () {
+            return [
                 {
                     icon: 'mdi-monitor-dashboard',
                     link: 'dashboard',
                     label: 'dashboard',
+                    canUse: this.hasPrivilegesOf('administrator'),
                     initialize: () => {
                         this.setModels()
                     },
@@ -67,6 +70,7 @@ export default {
                     icon: 'mdi-account',
                     link: 'users',
                     label: 'users',
+                    canUse: this.hasPrivilegesOf('administrator'),
                     initialize: () => {
                         this.setRoles()
                         this.getUsers()
@@ -76,6 +80,7 @@ export default {
                     icon: 'mdi-badge-account-outline',
                     link: 'roles',
                     label: 'roles',
+                    canUse: this.hasPrivilegesOf('administrator'),
                     initialize: () => {
                         this.setRoles()
                     },
@@ -84,16 +89,20 @@ export default {
                     icon: 'mdi-brain',
                     link: 'models',
                     label: 'models',
+                    canUse: this.hasPrivilegesOf('administrator'),
                     initialize: () => {
                         this.setModels()
                     },
                 },
-            ],
-            contribution: [
+            ]
+        },
+        contribution: function () {
+            return [
                 {
                     icon: 'mdi-clipboard-edit-outline',
                     link: 'contributions',
                     label: 'contributions',
+                    canUse: this.hasPrivilegesOf('contributor'),
                     initialize: () => {
                         this.getContributions()
                     },
@@ -102,12 +111,13 @@ export default {
                     icon: 'mdi-file-document',
                     link: 'contexts',
                     label: 'contexts',
+                    canUse: this.hasPrivilegesOf('contributor'),
                     initialize: () => {
                         this.getContexts()
                     },
                 },
-            ],
-        }
+            ]
+        },
     },
     methods: {
         logout: async function () {
