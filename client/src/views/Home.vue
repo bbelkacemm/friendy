@@ -31,12 +31,22 @@
                                   outline="false"></v-text-field>
                 </div>
                 <div>
-                    <v-btn icon tile @click="validateSend" color="#291720">
+                    <v-btn icon tile @click="validateSend" color="#291720" :disabled="!message || message.length === 0">
                         <v-icon>mdi-send</v-icon>
                     </v-btn>
                 </div>
             </v-form>
         </div>
+        <v-snackbar v-model="errorSnackbar" class="d-print-none" color="error">
+            <template v-slot:default>
+                {{ $t(errorMessage) }}
+            </template>
+            <template v-slot:action>
+                <v-btn icon dark @click="errorSnackbar = false">
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </template>
+        </v-snackbar>
     </v-container>
     <v-container v-else>
         <div class="title font-weight-bold text-center ma-10">
@@ -62,6 +72,8 @@ export default {
             message: null,
             isTyping: false,
             isProd: true,
+            errorSnackbar: false,
+            errorMessage: null,
         }
     },
     computed: {
@@ -99,11 +111,14 @@ export default {
                 'user-input': message,
                 'tag': this.mode.value,
             })
-            if (response !== 'responseError') {
+            if (response.value) {
                 this.addMessage({
-                    'value': response.response,
+                    'value': response.data.response,
                 })
-                this.setPropositions(response.propositions)
+                this.setPropositions(response.data.propositions)
+            } else {
+                this.errorSnackbar = true
+                this.errorMessage = response.message
             }
             this.scrollToBottom()
             this.isTyping = false

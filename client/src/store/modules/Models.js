@@ -18,8 +18,10 @@ const mutations = {
 
 const actions = {
     setModels: async function (context) {
-        const models = await get('/models')
-        context.commit('SET_MODELS', models)
+        const response = await get('/models')
+        if (response.value) {
+            context.commit('SET_MODELS', response.data)
+        }
     },
     editModel: async function (context, { model, state, tag }) {
         let data = {}

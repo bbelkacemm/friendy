@@ -24,8 +24,10 @@ const mutations = {
 
 const actions = {
     getUsers: async function (context) {
-        const users = await get('/users')
-        context.commit('SET_USERS', users)
+        const response = await get('/users')
+        if (response.value) {
+            context.commit('SET_USERS', response.data)
+        }
     },
     addUser: function (context, user) {
         context.commit('ADD_USER', user)

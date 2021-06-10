@@ -15,8 +15,10 @@ const mutations = {
 
 const actions = {
     getContexts: async function (context) {
-        const contexts = await get('/contexts/valid')
-        context.commit('SET_CONTEXTS', contexts)
+        const response = await get('/contexts/valid')
+        if (response.value) {
+            context.commit('SET_CONTEXTS', response.data)
+        }
     },
 }
 

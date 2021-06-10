@@ -24,8 +24,10 @@ const mutations = {
 
 const actions = {
     getContributions: async function (context) {
-        const contributions = await get('/contributions')
-        context.commit('SET_CONTRIBUTIONS', contributions)
+        const response = await get('/contributions')
+        if (response.value) {
+            context.commit('SET_CONTRIBUTIONS', response.data)
+        }
     },
     addContribution: function (context, contribution) {
         context.commit('ADD_CONTRIBUTION', contribution)

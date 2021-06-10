@@ -24,8 +24,10 @@ const mutations = {
 
 const actions = {
     setRoles: async function (context) {
-        const roles = await get('/roles')
-        context.commit('SET_ROLES', roles)
+        const response = await get('/roles')
+        if (response.value) {
+            context.commit('SET_ROLES', response.data)
+        }
     },
     addRole: function (context, role) {
         context.commit('ADD_ROLE', role)

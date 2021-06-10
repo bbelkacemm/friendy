@@ -24,10 +24,16 @@ export async function get(path, data) {
             params: data,
         })
         if (response.status === 200) {
-            return response.data
+            return {
+                value: true,
+                data: response.data,
+            }
         }
     } catch (error) {
-        return error.response.data
+        return {
+            value: false,
+            message: error.response.data,
+        }
     }
 }
 
