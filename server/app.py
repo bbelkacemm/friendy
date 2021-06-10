@@ -40,8 +40,9 @@ def chat():
     try:
         response = generate_response(user_input=user_input, lang=lang, tag=tag)
         return response, 200
+    except ModuleNotFoundError as exception:
+        return 'noModel', 400
     except Exception as exception:
-        print(exception)
         return 'responseError', 400
 
 

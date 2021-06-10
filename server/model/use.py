@@ -91,6 +91,9 @@ def generate_response(user_input, lang, tag):
     #
     m = Model.query.filter_by(state='enabled', tag=tag).first()
 
+    if m is None:
+        raise ModuleNotFoundError()
+
     # LOAD NECESSARY DATA
     words = pickle.load(open(f'{Path().absolute()}/server/model/output/{m.path}/words_{lang}.pkl', 'rb'))
     classes = pickle.load(open(f'{Path().absolute()}/server/model/output/{m.path}/classes_{lang}.pkl', 'rb'))
