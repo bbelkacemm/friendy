@@ -100,15 +100,34 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void sendMessage() {
+  void sendMessage() async {
+    if (_messageController.text.length == 0) {
+      return;
+    }
     _chat.add(_messageController.text);
-    _chat.send(_messageController.text);
+    var response = await _chat.send(_messageController.text);
+    if (response['value'] == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response['message']),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
     _messageController.clear();
   }
 
-  void sendProposition(String value) {
+  void sendProposition(String value) async {
     _chat.add(value);
-    _chat.send(value);
+    var response = await _chat.send(value);
+    if (response['value'] == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response['message']),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void displayProfile() {

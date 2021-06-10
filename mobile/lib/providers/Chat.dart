@@ -10,15 +10,29 @@ class Chat with ChangeNotifier {
   List<Message> messages = [];
   List<Proposition> propositions = [];
 
-  void send(String userInput) async {
-    var uri = Uri.http(URL, BOT_PATH, {'lang': 'en', 'user-input': userInput});
+  Future<dynamic> send(String userInput) async {
+    var uri = Uri.http(
+      URL,
+      BOT_PATH,
+      {
+        'lang': 'en',
+        'user-input': userInput,
+        'tag': 'prod',
+      },
+    );
     var response = await http.get(uri);
     if (response.statusCode == 200) {
       Message message = Message.fromJson(jsonDecode(response.body));
       messages.add(message);
       propositions = Proposition.fromJson(jsonDecode(response.body));
+      notifyListeners();
+      return {'value': true};
+    } else {
+      return {
+        'value': false,
+        'message': response.body,
+      };
     }
-    notifyListeners();
   }
 
   void add(String userInput) {
