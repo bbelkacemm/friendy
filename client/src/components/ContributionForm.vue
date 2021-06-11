@@ -20,69 +20,92 @@
                     </v-btn>
                 </v-card-title>
                 <v-divider></v-divider>
-                <v-stepper v-model="currentStep" class="elevation-0">
-                    <v-stepper-header class="elevation-0">
-                        <template v-for="step in steps">
-                            <v-stepper-step :key="`${step}-step`" :complete="currentStep > step" :step="step">
-                                {{ titles[step - 1] }}
-                            </v-stepper-step>
-
-                            <v-divider v-if="step !== steps" :key="step"></v-divider>
-                        </template>
-                    </v-stepper-header>
-
-                    <v-stepper-items>
-                        <v-stepper-content class="pa-0" v-for="step in steps" :key="`${step}-content`" :step="step">
-                            <v-container v-if="step === 1" fluid>
-                                <v-form v-on:submit.prevent="" ref="contributionForm">
-                                    <v-text-field class="mb-2" v-model="title" :rules="[validationRules.required]"
-                                                  hide-details="auto" :label="$t('title').toUpperCase()" outlined
-                                                  dense></v-text-field>
-                                    <v-textarea class="mb-2" v-model="description" :label="$t('description').toUpperCase()"
-                                                hide-details="auto" outlined dense></v-textarea>
-                                </v-form>
-                            </v-container>
-                            <v-container v-if="step === 2" fluid>
-                                <v-form v-on:submit.prevent="" ref="contextForm">
-                                    <v-text-field class="mb-2" v-model="code" :rules="[validationRules.required]"
+                <v-card-text class="pa-0">
+                    <v-container fluid>
+                        <!-- CONTRIBUTION'S FORM -->
+                        <v-form v-on:submit.prevent="" ref="contributionForm">
+                            <div class="two-columns">
+                                <v-text-field class="mb-2" v-model="title" :rules="[validationRules.required]"
+                                              hide-details="auto" :label="$t('title').toUpperCase()" outlined
+                                              dense></v-text-field>
+                                <v-combobox class="mb-2" :label="$t('contributionLanguage').toUpperCase()"
+                                            v-model="contributionLanguage"
+                                            :rules="[validationRules.required]"
+                                            hide-details="auto" :items="contributionsLanguagesList" outlined
+                                            dense></v-combobox>
+                            </div>
+                            <v-textarea class="mb-2" v-model="description" :label="$t('description').toUpperCase()"
+                                        hide-details="auto" height="75" outlined dense></v-textarea>
+                        </v-form>
+                        <!-- CONTEXT'S FORM -->
+                        <v-form v-on:submit.prevent="" ref="contextForm">
+                            <v-text-field class="mb-2" v-model="code" :rules="[validationRules.required]"
+                                          outlined
+                                          dense
+                                          hide-details="auto" :label="$t('code').toUpperCase()"></v-text-field>
+                            <v-row no-gutters>
+                                <v-col v-if="showField('en')">
+                                    <v-text-field class="mb-2" v-model="contextLabelEn"
+                                                  :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('code').toUpperCase()"></v-text-field>
-                                    <div id="context-labels">
-                                        <v-text-field class="mb-2" v-model="contextLabelEn"
-                                                      :rules="[validationRules.required]"
-                                                      outlined
-                                                      dense
-                                                      hide-details="auto" :label="$t('contextLabelEn').toUpperCase()"></v-text-field>
-                                        <v-text-field class="mb-2" v-model="contextLabelFr"
-                                                      :rules="[validationRules.required]"
-                                                      outlined
-                                                      dense
-                                                      hide-details="auto" :label="$t('contextLabelFr').toUpperCase()"></v-text-field>
-                                        <v-text-field class="mb-2" v-model="contextLabelAr"
-                                                      :rules="[validationRules.required]"
-                                                      outlined
-                                                      dense
-                                                      hide-details="auto" :label="$t('contextLabelAr').toUpperCase()"></v-text-field>
-                                    </div>
+                                                  hide-details="auto"
+                                                  :label="$t('contextLabelEn').toUpperCase()"></v-text-field>
+                                </v-col>
+                                <v-col v-if="showField('fr')">
+                                    <v-text-field class="mb-2" v-model="contextLabelFr"
+                                                  :rules="[validationRules.required]"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                                  :label="$t('contextLabelFr').toUpperCase()"></v-text-field>
+                                </v-col>
+                                <v-col v-if="showField('ar')">
+                                    <v-text-field class="mb-2" v-model="contextLabelAr"
+                                                  :rules="[validationRules.required]"
+                                                  outlined
+                                                  dense
+                                                  hide-details="auto"
+                                                  :label="$t('contextLabelAr').toUpperCase()"></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters>
+                                <v-col v-if="showField('en')">
                                     <v-text-field class="mb-2" v-model="propositionLabelEn"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelEn').toUpperCase()"></v-text-field>
+                                                  hide-details="auto"
+                                                  :label="$t('propositionLabelEn').toUpperCase()"></v-text-field>
+                                </v-col>
+                                <v-col v-if="showField('fr')">
                                     <v-text-field class="mb-2" v-model="propositionLabelFr"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelFr').toUpperCase()"></v-text-field>
+                                                  hide-details="auto"
+                                                  :label="$t('propositionLabelFr').toUpperCase()"></v-text-field>
+                                </v-col>
+                                <v-col v-if="showField('ar')">
                                     <v-text-field class="mb-2" v-model="propositionLabelAr"
                                                   :rules="[validationRules.required]"
                                                   outlined
                                                   dense
-                                                  hide-details="auto" :label="$t('propositionLabelAr').toUpperCase()"></v-text-field>
-                                </v-form>
-                            </v-container>
-                            <v-container v-if="step === 3" fluid>
+                                                  hide-details="auto"
+                                                  :label="$t('propositionLabelAr').toUpperCase()"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-container>
+                    <v-tabs v-model="tab" dark background-color="primary">
+                        <v-tab v-for="item in tabs" :key="item">
+                            {{ item }}
+                        </v-tab>
+                    </v-tabs>
+                    <v-tabs-items v-model="tab">
+                        <v-tab-item>
+                            <v-container fluid>
+                                <!-- PATTERN'S FORM -->
                                 <v-form v-on:submit.prevent="" ref="patternForm">
                                     <div id="pattern-form">
                                         <v-text-field class="mb-2" v-model="patternLabel"
@@ -90,19 +113,24 @@
                                                       outlined
                                                       dense hide-details="auto"
                                                       :label="$t('patternLabel').toUpperCase()"></v-text-field>
-                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()" v-model="patternLanguage"
+                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()"
+                                                    v-model="patternLanguage"
                                                     :rules="[validationRules.required]"
                                                     hide-details="auto" :items="languagesList" outlined
                                                     dense></v-combobox>
                                         <v-btn @click="pushPattern" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
+                                        <info :text="patternsInfo"/>
                                     </div>
                                 </v-form>
                                 <v-data-table :headers="patternsHeaders" :items="patterns"
                                               :items-per-page="5"></v-data-table>
                             </v-container>
-                            <v-container v-if="step === 4" fluid>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <v-container fluid>
+                                <!-- RESPONSE'S FORM -->
                                 <v-form v-on:submit.prevent="" ref="responseForm">
                                     <div id="response-form">
                                         <v-text-field class="mb-2" v-model="responseLabel"
@@ -110,41 +138,37 @@
                                                       outlined
                                                       dense hide-details="auto"
                                                       :label="$t('responseLabel').toUpperCase()"></v-text-field>
-                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()" v-model="responseLanguage"
+                                        <v-combobox class="mb-2" :label="$t('language').toUpperCase()"
+                                                    v-model="responseLanguage"
                                                     :rules="[validationRules.required]"
                                                     hide-details="auto" :items="languagesList" outlined
                                                     dense></v-combobox>
                                         <v-btn @click="pushResponse" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
+                                        <info :text="responsesInfo"/>
                                     </div>
                                 </v-form>
                                 <v-data-table :headers="responsesHeaders" :items="responses"
                                               :items-per-page="5"></v-data-table>
                             </v-container>
-                            <v-container v-if="step === 5" fluid>
+                        </v-tab-item>
+                        <v-tab-item>
+                            <v-container fluid>
                                 <v-data-table :headers="contextsHeaders" :items="contexts" v-model="selectedContexts"
                                               show-select :items-per-page="5"></v-data-table>
                             </v-container>
-                            <v-divider></v-divider>
-                            <v-card-actions fluid elevation="0" class="pa-0">
-                                <v-btn v-if="currentStep > 1" plain @click="back(step)">
-                                    <v-icon left>mdi-arrow-left-thick</v-icon>
-                                    {{ $t('back') }}
-                                </v-btn>
-                                <v-spacer></v-spacer>
-                                <v-btn v-if="currentStep < steps" text color="primary" @click="next(step)">
-                                    {{ $t('continue') }}
-                                    <v-icon right>mdi-arrow-right-thick</v-icon>
-                                </v-btn>
-                                <v-btn v-else @click="save" text color="primary">
-                                    <v-icon left>mdi-content-save</v-icon>
-                                    {{ $t('save') }}
-                                </v-btn>
-                            </v-card-actions>
-                        </v-stepper-content>
-                    </v-stepper-items>
-                </v-stepper>
+                        </v-tab-item>
+                    </v-tabs-items>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions class="pa-0">
+                    <v-spacer></v-spacer>
+                    <v-btn @click="save" text color="primary">
+                        <v-icon left>mdi-content-save</v-icon>
+                        {{ $t('save') }}
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </v-form>
         <v-snackbar v-model="errorSnackbar" class="d-print-none" color="error">
@@ -163,9 +187,12 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { post } from '@/helpers/HTTPHelper'
+import i18n from '@/i18n'
+import Info from '@/components/Info'
 
 export default {
     name: 'ContributionForm',
+    components: { Info },
     props: {
         add: Boolean,
         edit: Boolean,
@@ -177,19 +204,16 @@ export default {
     },
     data: function () {
         return {
+            tab: 0,
+            tabs: [this.$t('patterns'), this.$t('responses'), this.$t('relatedContexts')],
             dialog: false,
-            currentStep: 1,
-            steps: 5,
-            titles: [
-                this.capitalizeFirst(this.$t('contributionForm')),
-                this.capitalizeFirst(this.$t('contextForm')),
-                this.capitalizeFirst(this.$t('patternsForm')),
-                this.capitalizeFirst(this.$t('responsesForm')),
-                this.capitalizeFirst(this.$t('relatedContexts')),
-            ],
             // CONTRIBUTION
             title: null,
             description: null,
+            contributionLanguage: {
+                text: i18n.t('fr'),
+                value: 'fr',
+            },
             // CONTEXT
             code: null,
             contextLabelEn: null,
@@ -199,6 +223,7 @@ export default {
             propositionLabelFr: null,
             propositionLabelAr: null,
             // PATTERNS
+            patternsInfo: `${this.$t('patternDescription')} - ${this.$t('patternExample')}`,
             patternLabel: null,
             patternLanguage: null,
             patternsHeaders: [
@@ -212,6 +237,7 @@ export default {
                 },
             ],
             // RESPONSES
+            responsesInfo: `${this.$t('responseDescription')} - ${this.$t('responseExample')}`,
             responseLabel: null,
             responseLanguage: null,
             responsesHeaders: [
@@ -246,103 +272,106 @@ export default {
         }
     },
     computed: {
+        contributionsLanguagesList: function () {
+            return [
+                {
+                    text: i18n.t('all'),
+                    value: 'all',
+                },
+                ...this.languagesList,
+            ]
+        },
         ...mapGetters('contexts', ['contexts']),
         ...mapGetters('patterns', ['patterns']),
         ...mapGetters('responses', ['responses']),
     },
     methods: {
-        back: function (step) {
-            this.currentStep = step - 1
-        },
-        next: function (step) {
-            let patternsSet = null
-            let responsesSet = null
-            let error = false
-            switch (this.currentStep) {
-                case 1:
-                    break
-                case 2:
-                    if (!this.$refs.contextForm[0].validate()) return
-                    break
-                case 3:
-                    if (this.patterns.length === 0) {
-                        this.snackbarErrorMessage = this.$t('patternsRequired')
-                        this.errorSnackbar = true
-                        return
-                    }
-                    break
-                case 4:
-                    if (this.responses.length === 0) {
-                        this.snackbarErrorMessage = this.$t('responsesRequired')
-                        this.errorSnackbar = true
-                        return
-                    }
-                    patternsSet = new Set(this.patterns.map(p => p.language))
-                    responsesSet = new Set(this.responses.map(r => r.language))
-                    if (patternsSet.size !== responsesSet.size) {
-                        error = true
-                    }
-                    if (!error) {
-                        for (let item of patternsSet) {
-                            if (!responsesSet.has(item)) {
-                                error = true
-                                break
-                            }
-                        }
-                    }
-
-                    if (error) {
-                        this.snackbarErrorMessage = this.$t('patternsResponsesLanguageMatch')
-                        this.errorSnackbar = true
-                        return
-                    }
-                    break
+        validate: function () {
+            let valid = true
+            // VALIDATE CONTRIBUTION'S FORM
+            if (!this.$refs.contributionForm.validate()) valid = false
+            // VALIDATE CONTEXT'S FORM
+            if (!this.$refs.contextForm.validate()) valid = false
+            // VALIDATE PATTERNS
+            if (this.patterns.length === 0) {
+                this.snackbarErrorMessage = this.$t('patternsRequired')
+                this.errorSnackbar = true
+                valid = false
             }
-            this.currentStep = step + 1
+            // VALIDATE RESPONSES
+            if (this.responses.length === 0) {
+                this.snackbarErrorMessage = this.$t('responsesRequired')
+                this.errorSnackbar = true
+                valid = false
+            }
+            // VALIDATE PATTERNS/RESPONSES LANGUAGE MATCHING
+            let patternsLanguageSet = new Set(this.patterns.map(p => p.language))
+            let responsesLanguageSet = new Set(this.responses.map(r => r.language))
+            let error = false
+            if (patternsLanguageSet.size !== responsesLanguageSet.size) {
+                error = true
+            }
+            if (!error) {
+                for (let item of patternsLanguageSet) {
+                    if (!responsesLanguageSet.has(item)) {
+                        error = true
+                        break
+                    }
+                }
+            }
+            if (error) {
+                this.snackbarErrorMessage = this.$t('patternsResponsesLanguageMatch')
+                this.errorSnackbar = true
+                valid = false
+            }
+            return valid
         },
         save: async function () {
-            const contribution = await post('/contributions/contribution', {
-                contribution: {
-                    'title': this.title,
-                    'description': this.description,
-                },
-                context: {
-                    'code': this.code,
-                    'label_en': this.contextLabelEn,
-                    'label_fr': this.contextLabelFr,
-                    'label_ar': this.contextLabelAr,
-                    'proposition_en': this.propositionLabelEn,
-                    'proposition_fr': this.propositionLabelFr,
-                    'proposition_ar': this.propositionLabelAr,
-                },
-                patterns: this.patterns,
-                responses: this.responses,
-                relatedContexts: this.selectedContexts.map(context => context.code),
-                user_id: this.user.id,
-            })
-            this.addContribution(contribution)
-            this.RESET_PATTERNS_STATE()
-            this.RESET_RESPONSES_STATE()
-            this.dialog = false
-            this.$emit('close')
+            if (this.validate()) {
+                const contribution = await post('/contributions/contribution', {
+                    contribution: {
+                        'title': this.title,
+                        'description': this.description,
+                    },
+                    context: {
+                        'code': this.code,
+                        'label_en': this.contextLabelEn,
+                        'label_fr': this.contextLabelFr,
+                        'label_ar': this.contextLabelAr,
+                        'proposition_en': this.propositionLabelEn,
+                        'proposition_fr': this.propositionLabelFr,
+                        'proposition_ar': this.propositionLabelAr,
+                    },
+                    patterns: this.patterns,
+                    responses: this.responses,
+                    relatedContexts: this.selectedContexts.map(context => context.code),
+                    user_id: this.user.id,
+                })
+                this.addContribution(contribution)
+                this.RESET_PATTERNS_STATE()
+                this.RESET_RESPONSES_STATE()
+                this.dialog = false
+                this.$emit('close')
+            }
         },
         // PATTERNS
         pushPattern: function () {
-            if (this.$refs.patternForm[0].validate()) {
+            if (this.$refs.patternForm.validate()) {
                 this.addPattern({
                     label: this.patternLabel,
                     language: this.patternLanguage.value,
                 })
-                this.$refs.patternForm[0].reset()
+                this.$refs.patternForm.reset()
             }
         },
+        // RESPONSES
         pushResponse: function () {
-            if (this.$refs.responseForm[0].validate()) {
+            if (this.$refs.responseForm.validate()) {
                 this.addResponse({
                     label: this.responseLabel,
                     language: this.responseLanguage.value,
                 })
-                this.$refs.responseForm[0].reset()
+                this.$refs.responseForm.reset()
             }
         },
         close: function () {
@@ -350,6 +379,9 @@ export default {
             this.RESET_PATTERNS_STATE()
             this.RESET_RESPONSES_STATE()
             this.$emit('close')
+        },
+        showField: function (language) {
+            return this.contributionLanguage.value === 'all' || this.contributionLanguage.value === language
         },
         ...mapActions('contributions', ['addContribution']),
         ...mapActions('contexts', ['getContexts']),
@@ -364,19 +396,19 @@ export default {
 
 <style scoped lang="sass">
 
-#context-labels
+.two-columns
     display: grid
-    grid-template-columns: 1fr 1fr 1fr
+    grid-template-columns: 1fr auto
     grid-gap: 10px
 
 #pattern-form
     display: grid
-    grid-template-columns: 1fr 1fr auto
+    grid-template-columns: 1fr 1fr auto auto
     grid-gap: 10px
 
 #response-form
     display: grid
-    grid-template-columns: 1fr 1fr auto
+    grid-template-columns: 1fr 1fr auto auto
     grid-gap: 10px
 
 </style>
