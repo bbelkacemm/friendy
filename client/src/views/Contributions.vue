@@ -11,6 +11,27 @@
                     <v-icon left>mdi-pencil</v-icon>
                     {{ $t('edit') }}
                 </v-btn>
+
+                <v-btn v-on:click="validateContribution"
+                       v-if="selectedContributions[0] && selectedContributions.length === 1 && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'invalid')"
+                       plain>
+                    <v-icon left>mdi-check</v-icon>
+                    {{ $t('validate') }}
+                </v-btn>
+                <v-btn v-else plain disabled>
+                    <v-icon left>mdi-check</v-icon>
+                    {{ $t('validate') }}
+                </v-btn>
+                <v-btn v-on:click="refuseContribution"
+                       v-if="selectedContributions[0] && selectedContributions.length === 1 && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'valid')"
+                       plain>
+                    <v-icon left>mdi-close</v-icon>
+                    {{ $t('refuse') }}
+                </v-btn>
+                <v-btn v-else disabled plain>
+                    <v-icon left>mdi-close</v-icon>
+                    {{ $t('refuse') }}
+                </v-btn>
             </v-toolbar-items>
         </v-toolbar>
 
@@ -77,8 +98,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import ContributionForm from '@/components/ContributionForm'
+import { post } from '@/helpers/HTTPHelper'
 
 export default {
     name: 'Contributions',
@@ -128,6 +150,23 @@ export default {
             this.formKey++
             this.selectedContributions = []
         },
+        validateContribution: async function () {
+            const contribution = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
+                'status': 'valid',
+                'user_id': this.user.id,
+            })
+            this.editContribution(contribution)
+            this.selectedContributions = []
+        },
+        refuseContribution: async function () {
+            const contribution = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
+                'status': 'invalid',
+                'user_id': this.user.id,
+            })
+            this.editContribution(contribution)
+            this.selectedContributions = []
+        },
+        ...mapActions('contributions', ['editContribution']),
     },
 }
 </script>
