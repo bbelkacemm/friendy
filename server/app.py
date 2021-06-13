@@ -325,6 +325,67 @@ def context():
             return 400
 
 
+# EDIT CONTRIBUTION
+@app.route('/contributions/contribution/<id>', methods=['POST'])
+def edit_contribution(id):
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+
+            r_contexts = []
+            for code in data['relatedContexts']:
+                r_contexts.append(Context.query.filter_by(code=code).first())
+
+            contribution = Contribution.query.filter_by(id=id).first()
+
+            contribution.title = data['contribution']['title']
+            contribution.description = data['contribution']['description']
+            contribution.context.code = data['context']['code']
+            contribution.context.label_en = data['context']['label_en']
+            contribution.context.label_fr = data['context']['label_fr']
+            contribution.context.label_ar = data['context']['label_ar']
+            contribution.context.proposition_en = data['context']['proposition_en']
+            contribution.context.proposition_fr = data['context']['proposition_fr']
+            contribution.context.proposition_ar = data['context']['proposition_ar']
+
+            for pattern in data['patterns']:
+                if pattern['status'] == 'edit':
+                    p = Pattern.query.filter_by(id=pattern['id']).first()
+                    p.label = pattern['label']
+                    p.language = pattern['language']
+                elif pattern['status'] == 'delete':
+                    Pattern.query.filter_by(id=pattern['id']).delete()
+                elif pattern['status'] == 'add':
+                    database.session.add(Pattern(
+                        label=pattern['label'],
+                        language=pattern['language'],
+                        context_id=contribution.context.id
+                    ))
+
+            for response in data['responses']:
+                if response['status'] == 'edit':
+                    r = Response.query.filter_by(id=response['id']).first()
+                    r.label = response['label']
+                    r.language = response['language']
+                elif response['status'] == 'delete':
+                    Response.query.filter_by(id=response['id']).delete()
+                elif response['status'] == 'add':
+                    database.session.add(Response(
+                        label=response['label'],
+                        language=response['language'],
+                        context_id=contribution.context.id
+                    ))
+
+            contribution.context.contexts = r_contexts
+
+            database.session.commit()
+
+            return contribution.as_dict(), 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 400
+
+
 # CONTEXTS BY STATUS
 @app.route('/contexts/<status>', methods=['GET'])
 def get_contexts(status):
