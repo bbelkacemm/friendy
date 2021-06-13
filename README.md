@@ -78,7 +78,7 @@ npm run serve
     - [x] Display contributions
     - [x] Search for a contribution
     - [x] Add contribution
-    - [ ] Edit contribution
+    - [x] Edit contribution
     - [ ] Delete contribution
     - [ ] Validate contribution
 - [x] Neural Network Models
