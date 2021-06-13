@@ -3,7 +3,14 @@
         <v-toolbar dense elevation="0" class="primary" dark>
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
-                <contribution-form add v-on:close="formKey++" :key="`${formKey}-add`"/>
+                <contribution-form add v-on:close="onClose" :key="`${formKey}-add`"/>
+                <contribution-form v-if="selectedContributions[0] && selectedContributions.length === 1" edit
+                                   v-on:close="onClose" :key="`${formKey}-edit`"
+                                   :contribution="selectedContributions[0]"/>
+                <v-btn v-else plain disabled>
+                    <v-icon left>mdi-pencil</v-icon>
+                    {{ $t('edit') }}
+                </v-btn>
             </v-toolbar-items>
         </v-toolbar>
 
@@ -17,7 +24,8 @@
                       class="elevation-1">
             <template v-slot:top>
                 <v-container fluid>
-                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense outlined>
+                    <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
+                                  outlined>
                         <template v-slot:append>
                             <v-icon>mdi-magnify</v-icon>
                         </template>
@@ -27,7 +35,7 @@
 
             <template v-slot:item.description="{item}">
                 <div v-if="item.description">
-                    {{item.description}}
+                    {{ item.description }}
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
@@ -49,13 +57,13 @@
             </template>
             <template v-slot:item.createdAt="{item}">
                 <div v-if="item['createdAt']">
-                    {{formatDate(item['createdAt']).toUpperCase()}}
+                    {{ formatDate(item['createdAt']).toUpperCase() }}
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
             <template v-slot:item.validatedAt="{item}">
                 <div v-if="item['validatedAt']">
-                    {{formatDate(item['validatedAt']).toUpperCase()}}
+                    {{ formatDate(item['validatedAt']).toUpperCase() }}
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
@@ -114,6 +122,12 @@ export default {
     },
     computed: {
         ...mapGetters('contributions', ['contributions']),
+    },
+    methods: {
+        onClose: function () {
+            this.formKey++
+            this.selectedContributions = []
+        },
     },
 }
 </script>

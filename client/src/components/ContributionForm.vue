@@ -121,11 +121,22 @@
                                         <v-btn @click="pushPattern" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
+                                        <v-btn @click="updatePattern" icon tile color="secondary"
+                                               :disabled="!selectedPatterns[0]">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        <v-btn @click="removePattern" icon tile color="error"
+                                               :disabled="!selectedPatterns[0]">
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                         <info :text="patternsInfo"/>
                                     </div>
                                 </v-form>
-                                <v-data-table :headers="patternsHeaders" :items="patterns"
-                                              :items-per-page="5"></v-data-table>
+                                <v-data-table :headers="patternsHeaders" :items="filteredPatterns"
+                                              v-model="selectedPatterns"
+                                              :items-per-page="5" v-on:item-selected="onPatternSelect" item-key="label"
+                                              show-select
+                                              single-select></v-data-table>
                             </v-container>
                         </v-tab-item>
                         <v-tab-item>
@@ -146,11 +157,21 @@
                                         <v-btn @click="pushResponse" icon tile color="primary">
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
+                                        <v-btn @click="updateResponse" icon tile color="secondary"
+                                               :disabled="!selectedResponses[0]">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        <v-btn @click="removeResponse" icon tile color="error"
+                                               :disabled="!selectedResponses[0]">
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                         <info :text="responsesInfo"/>
                                     </div>
                                 </v-form>
-                                <v-data-table :headers="responsesHeaders" :items="responses"
-                                              :items-per-page="5"></v-data-table>
+                                <v-data-table :headers="responsesHeaders" :items="filteredResponses"
+                                              :items-per-page="5" v-on:item-selected="onResponseSelect"
+                                              v-model="selectedResponses" show-select item-key="label"
+                                              single-select></v-data-table>
                             </v-container>
                         </v-tab-item>
                         <v-tab-item>
@@ -196,11 +217,32 @@ export default {
     props: {
         add: Boolean,
         edit: Boolean,
+        contribution: Object,
     },
     created: function () {
         this.getContexts()
         this.RESET_PATTERNS_STATE()
         this.RESET_RESPONSES_STATE()
+        if (this.edit) {
+            this.title = this.contribution.title
+            this.description = this.contribution.description
+            this.code = this.contribution.context.code
+            this.contextLabelEn = this.contribution.context.labelEn
+            this.contextLabelFr = this.contribution.context.labelFr
+            this.contextLabelAr = this.contribution.context.labelAr
+            this.propositionLabelEn = this.contribution.context.propositionEn
+            this.propositionLabelFr = this.contribution.context.propositionFr
+            this.propositionLabelAr = this.contribution.context.propositionAr
+            this.setPatterns(this.contribution.context.patterns.map(item => {
+                item.status = 'skip'
+                return item
+            }))
+            this.setResponses(this.contribution.context.responses.map(item => {
+                item.status = 'skip'
+                return item
+            }))
+            this.selectedContexts = this.contribution.context.contexts
+        }
     },
     data: function () {
         return {
@@ -236,6 +278,7 @@ export default {
                     value: 'language',
                 },
             ],
+            selectedPatterns: [],
             // RESPONSES
             responsesInfo: `${this.$t('responseDescription')} - ${this.$t('responseExample')}`,
             responseLabel: null,
@@ -250,19 +293,20 @@ export default {
                     value: 'language',
                 },
             ],
+            selectedResponses: [],
             // RELATED CONTEXTS
             contextsHeaders: [
                 {
                     text: this.$t('labelEn').toUpperCase(),
-                    value: 'label_en',
+                    value: 'labelEn',
                 },
                 {
                     text: this.$t('labelFr').toUpperCase(),
-                    value: 'label_fr',
+                    value: 'labelFr',
                 },
                 {
                     text: this.$t('labelAr').toUpperCase(),
-                    value: 'label_ar',
+                    value: 'labelAr',
                 },
             ],
             selectedContexts: [],
@@ -282,8 +326,8 @@ export default {
             ]
         },
         ...mapGetters('contexts', ['contexts']),
-        ...mapGetters('patterns', ['patterns']),
-        ...mapGetters('responses', ['responses']),
+        ...mapGetters('patterns', ['patterns', 'filteredPatterns']),
+        ...mapGetters('responses', ['responses', 'filteredResponses']),
     },
     methods: {
         validate: function () {
@@ -328,26 +372,48 @@ export default {
         },
         save: async function () {
             if (this.validate()) {
-                const contribution = await post('/contributions/contribution', {
-                    contribution: {
-                        'title': this.title,
-                        'description': this.description,
-                    },
-                    context: {
-                        'code': this.code,
-                        'label_en': this.contextLabelEn,
-                        'label_fr': this.contextLabelFr,
-                        'label_ar': this.contextLabelAr,
-                        'proposition_en': this.propositionLabelEn,
-                        'proposition_fr': this.propositionLabelFr,
-                        'proposition_ar': this.propositionLabelAr,
-                    },
-                    patterns: this.patterns,
-                    responses: this.responses,
-                    relatedContexts: this.selectedContexts.map(context => context.code),
-                    user_id: this.user.id,
-                })
-                this.addContribution(contribution)
+                if (this.add) {
+                    const contribution = await post('/contributions/contribution', {
+                        contribution: {
+                            'title': this.title,
+                            'description': this.description,
+                        },
+                        context: {
+                            'code': this.code,
+                            'label_en': this.contextLabelEn,
+                            'label_fr': this.contextLabelFr,
+                            'label_ar': this.contextLabelAr,
+                            'proposition_en': this.propositionLabelEn,
+                            'proposition_fr': this.propositionLabelFr,
+                            'proposition_ar': this.propositionLabelAr,
+                        },
+                        patterns: this.patterns,
+                        responses: this.responses,
+                        relatedContexts: this.selectedContexts.map(context => context.code),
+                        user_id: this.user.id,
+                    })
+                    this.addContribution(contribution)
+                } else if (this.edit) {
+                    const updatedContribution = await post(`/contributions/contribution/${this.contribution.id}`, {
+                        contribution: {
+                            'title': this.title,
+                            'description': this.description,
+                        },
+                        context: {
+                            'code': this.code,
+                            'label_en': this.contextLabelEn,
+                            'label_fr': this.contextLabelFr,
+                            'label_ar': this.contextLabelAr,
+                            'proposition_en': this.propositionLabelEn,
+                            'proposition_fr': this.propositionLabelFr,
+                            'proposition_ar': this.propositionLabelAr,
+                        },
+                        patterns: this.patterns,
+                        responses: this.responses,
+                        relatedContexts: this.selectedContexts.map(context => context.code),
+                    })
+                    this.editContribution(updatedContribution)
+                }
                 this.RESET_PATTERNS_STATE()
                 this.RESET_RESPONSES_STATE()
                 this.dialog = false
@@ -358,21 +424,84 @@ export default {
         pushPattern: function () {
             if (this.$refs.patternForm.validate()) {
                 this.addPattern({
-                    label: this.patternLabel,
-                    language: this.patternLanguage.value,
+                    'status': 'add',
+                    'label': this.patternLabel,
+                    'language': this.patternLanguage.value,
                 })
                 this.$refs.patternForm.reset()
+                this.selectedPatterns = []
             }
+        },
+        updatePattern: function () {
+            if (this.$refs.patternForm.validate()) {
+                this.editPattern({
+                    'status': this.selectedPatterns[0].id ? 'edit' : 'add',
+                    'temporaryId': this.selectedPatterns[0].temporaryId,
+                    'id': this.selectedPatterns[0].id,
+                    'label': this.patternLabel,
+                    'language': this.patternLanguage,
+                })
+                this.$refs.patternForm.reset()
+                this.selectedPatterns = []
+            }
+        },
+        removePattern: function () {
+            if (this.selectedPatterns[0].id) {
+                this.deletePattern({
+                    'status': 'delete',
+                    'id': this.selectedPatterns[0].id,
+                    'label': this.patternLabel,
+                    'language': this.patternLanguage,
+                })
+            } else {
+                this.deletePattern({
+                    'label': this.patternLabel,
+                    'language': this.patternLanguage.value,
+                })
+            }
+            this.selectedPatterns = []
+            this.$refs.patternForm.reset()
         },
         // RESPONSES
         pushResponse: function () {
             if (this.$refs.responseForm.validate()) {
                 this.addResponse({
-                    label: this.responseLabel,
-                    language: this.responseLanguage.value,
+                    'status': 'add',
+                    'label': this.responseLabel,
+                    'language': this.responseLanguage.value,
                 })
                 this.$refs.responseForm.reset()
             }
+        },
+        updateResponse: function () {
+            if (this.$refs.responseForm.validate()) {
+                this.editResponse({
+                    'status': this.selectedResponses[0].id ? 'edit' : 'add',
+                    'temporaryId': this.selectedResponses[0].temporaryId,
+                    'id': this.selectedResponses[0].id,
+                    'label': this.responseLabel,
+                    'language': this.responseLanguage,
+                })
+                this.$refs.responseForm.reset()
+                this.selectedResponses = []
+            }
+        },
+        removeResponse: function () {
+            const response = {
+                'label': this.responseLabel,
+                'language': this.responseLanguage,
+            }
+            if (this.selectedResponses[0].id) {
+                this.deleteResponse({
+                    'status': 'delete',
+                    'id': this.selectedResponses[0].id,
+                    ...response,
+                })
+            } else {
+                this.deleteResponse(response)
+            }
+            this.selectedResponses = []
+            this.$refs.responseForm.reset()
         },
         close: function () {
             this.dialog = false
@@ -383,10 +512,26 @@ export default {
         showField: function (language) {
             return this.contributionLanguage.value === 'all' || this.contributionLanguage.value === language
         },
-        ...mapActions('contributions', ['addContribution']),
+        onPatternSelect: function ({ value, item }) {
+            if (value) {
+                this.patternLabel = item.label
+                this.patternLanguage = item.language
+            } else {
+                this.$refs.patternForm.reset()
+            }
+        },
+        onResponseSelect: function ({ value, item }) {
+            if (value) {
+                this.responseLabel = item.label
+                this.responseLanguage = item.language
+            } else {
+                this.$refs.responseForm.reset()
+            }
+        },
+        ...mapActions('contributions', ['addContribution', 'editContribution']),
         ...mapActions('contexts', ['getContexts']),
-        ...mapActions('patterns', ['setPatterns', 'addPattern']),
-        ...mapActions('responses', ['setResponses', 'addResponse']),
+        ...mapActions('patterns', ['setPatterns', 'addPattern', 'editPattern', 'deletePattern']),
+        ...mapActions('responses', ['setResponses', 'addResponse', 'editResponse', 'deleteResponse']),
         ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
         ...mapMutations('patterns', ['RESET_PATTERNS_STATE']),
         ...mapMutations('responses', ['RESET_RESPONSES_STATE']),
@@ -403,12 +548,12 @@ export default {
 
 #pattern-form
     display: grid
-    grid-template-columns: 1fr 1fr auto auto
+    grid-template-columns: 1fr 1fr repeat(4, auto)
     grid-gap: 10px
 
 #response-form
     display: grid
-    grid-template-columns: 1fr 1fr auto auto
+    grid-template-columns: 1fr 1fr repeat(4, auto)
     grid-gap: 10px
 
 </style>

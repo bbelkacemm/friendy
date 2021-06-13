@@ -11,8 +11,8 @@ const mutations = {
     ADD_CONTRIBUTION: function (state, contribution) {
         state.contributions.push(contribution)
     },
-    EDIT_CONTRIBUTION: function (state, payload) {
-        state.contributions.splice(payload.index, 1, payload.contribution)
+    EDIT_CONTRIBUTION: function (state, { index, contribution }) {
+        state.contributions.splice(index, 1, contribution)
     },
     DELETE_CONTRIBUTION: function (state, index) {
         state.contributions.splice(index, 1)
@@ -31,6 +31,12 @@ const actions = {
     },
     addContribution: function (context, contribution) {
         context.commit('ADD_CONTRIBUTION', contribution)
+    },
+    editContribution: function (context, contribution) {
+        context.commit('EDIT_CONTRIBUTION', {
+            index: context.state.contributions.findIndex(item => item.id === contribution.id),
+            contribution: contribution,
+        })
     },
 }
 
