@@ -80,7 +80,7 @@ npm run serve
     - [x] Add contribution
     - [x] Edit contribution
     - [ ] Delete contribution
-    - [ ] Validate contribution
+    - [x] Validate contribution
 - [x] Neural Network Models
     - [x] Display models
     - [x] Edit model's state (enabled or disabled)
