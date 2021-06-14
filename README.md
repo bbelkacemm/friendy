@@ -74,12 +74,12 @@ npm run serve
 - [x] Chatbot
     - [x] Send a message
     - [x] Receive a response with its propositions
-- [ ] Contributions
+- [x] Contributions
     - [x] Display contributions
     - [x] Search for a contribution
     - [x] Add contribution
     - [x] Edit contribution
-    - [ ] Delete contribution
+    - [x] Delete contribution
     - [x] Validate contribution
 - [x] Neural Network Models
     - [x] Display models
