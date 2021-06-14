@@ -8,8 +8,8 @@ database = SQLAlchemy()
 
 related_contexts = database.Table(
     'related_contexts',
-    Column('main_context_id', Integer, ForeignKey('contexts.id'), primary_key=True),
-    Column('related_context_id', Integer, ForeignKey('contexts.id'), primary_key=True),
+    Column('main_context_id', Integer, ForeignKey('contexts.id', ondelete='CASCADE'), primary_key=True),
+    Column('related_context_id', Integer, ForeignKey('contexts.id', ondelete='CASCADE'), primary_key=True),
 )
 
 
@@ -111,7 +111,7 @@ class Contribution(database.Model):
     created_at = Column(TIMESTAMP, nullable=False, default=datetime.datetime.utcnow)
     validated_at = Column(TIMESTAMP)
 
-    context = database.relationship('Context', uselist=False, back_populates='contribution')
+    context = database.relationship('Context', uselist=False, back_populates='contribution', cascade='all')
 
     def as_dict(self):
         return dict({
@@ -158,14 +158,15 @@ class Context(database.Model):
     contribution_id = Column(Integer, ForeignKey('contributions.id'))
 
     contribution = database.relationship('Contribution', back_populates='context')
-    patterns = database.relationship('Pattern')
-    responses = database.relationship('Response')
+    patterns = database.relationship('Pattern', cascade='all')
+    responses = database.relationship('Response', cascade='all')
 
     contexts = database.relationship(
         'Context',
         secondary=related_contexts,
         primaryjoin=(related_contexts.c.main_context_id == id),
         secondaryjoin=(related_contexts.c.related_context_id == id),
+        cascade="all, delete",
     )
 
     def as_dict(self):

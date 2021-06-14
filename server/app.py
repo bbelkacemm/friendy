@@ -393,6 +393,22 @@ def update_contribution(id):
             return 400
 
 
+# DELETE CONTRIBUTION
+@app.route('/contributions/contribution/<id>', methods=['DELETE'])
+def delete_contribution(id):
+    if request.method == 'DELETE':
+        try:
+            contribution = Contribution.query.filter_by(id=id).first()
+
+            database.session.delete(contribution)
+            database.session.commit()
+
+            return 'ok', 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 'deleteError', 400
+
+
 # CONTEXTS BY STATUS
 @app.route('/contexts/<status>', methods=['GET'])
 def get_contexts(status):
