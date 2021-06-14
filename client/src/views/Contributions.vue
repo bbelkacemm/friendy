@@ -32,6 +32,11 @@
                     <v-icon left>mdi-close</v-icon>
                     {{ $t('refuse') }}
                 </v-btn>
+
+                <v-btn v-if="selectedContributions[0]" plain v-on:click="removeContribution">
+                    <v-icon left>mdi-delete</v-icon>
+                    {{ $t('delete') }}
+                </v-btn>
             </v-toolbar-items>
         </v-toolbar>
 
@@ -100,7 +105,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ContributionForm from '@/components/ContributionForm'
-import { post } from '@/helpers/HTTPHelper'
+import { post, remove } from '@/helpers/HTTPHelper'
 
 export default {
     name: 'Contributions',
@@ -166,7 +171,14 @@ export default {
             this.editContribution(contribution)
             this.selectedContributions = []
         },
-        ...mapActions('contributions', ['editContribution']),
+        removeContribution: async function () {
+            const result = await remove(`/contributions/contribution/${this.selectedContributions[0].id}`)
+            if (result.value) {
+                this.deleteContribution(this.selectedContributions[0])
+                this.selectedContributions = []
+            }
+        },
+        ...mapActions('contributions', ['editContribution', 'deleteContribution']),
     },
 }
 </script>

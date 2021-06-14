@@ -38,6 +38,9 @@ const actions = {
             contribution: contribution,
         })
     },
+    deleteContribution: function (context, contribution) {
+        context.commit('DELETE_CONTRIBUTION', context.state.contributions.findIndex(item => item.id === contribution.id))
+    }
 }
 
 const getters = {
