@@ -1,9 +1,9 @@
 <template>
     <v-card id="message-container" elevation="0" :style="{'direction': sender ? 'rtl' : 'ltr'}">
         <v-card-title>
-            <v-avatar color="" style="background-color: #9CAFB7" size="32"></v-avatar>
+            <v-avatar color="#F5F5F5" size="32"></v-avatar>
         </v-card-title>
-        <v-card-text class="pa-2 white--text font-weight-bold" style="background-color: #9CAFB7; direction: ltr">
+        <v-card-text :class="sender ? 'pa-3' : 'pa-3 elevation-4'" :style="messageStyle" >
             {{ value }}
         </v-card-text>
         <div></div>
@@ -18,6 +18,17 @@ export default {
         value: String,
         time: Date,
     },
+    computed: {
+        messageStyle: function () {
+            let style = 'direction: ltr;'
+            if(this.sender) {
+                style += 'background-color: #F5F5F5; color: black; border-radius: 16px 8px 16px 16px;'
+            } else{
+                style += 'background-color: #448AFF; color: white; border-radius: 8px 16px 16px 16px;'
+            }
+            return style
+        }
+    }
 }
 </script>
 

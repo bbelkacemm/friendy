@@ -1,15 +1,16 @@
 <template>
     <v-container fluid v-if="user" class="fill-height">
-        <div id="chat-bot-container" class="fill-height elevation-4">
-            <div class="pa-4 grey lighten-4" v-if="hasPrivilegesOf('contributor')">
-                <v-row no-gutters id="chat-header">
-                    <v-col class="title text-uppercase font-weight-bold grey--text lighten-1">
+        <div id="chat-bot-container" class="fill-height">
+            <div class=" lighten-4" v-if="hasPrivilegesOf('contributor')">
+                <v-row no-gutters id="chat-header" class="pa-4">
+                    <v-col class="subtitle-1 text-uppercase font-weight-bold grey--text lighten-1">
                         {{ $t('mode') }} {{ mode.text }}
                     </v-col>
                     <v-col>
-                        <v-switch class="ma-0" v-model="isProd" color="success" inset hide-details></v-switch>
+                        <v-switch class="ma-0" v-model="isProd" color="#448AFF" inset hide-details></v-switch>
                     </v-col>
                 </v-row>
+                <v-divider></v-divider>
             </div>
             <div id="messages-container">
                 <template v-for="(item, index) in messages">
@@ -31,7 +32,7 @@
                                   outline="false"></v-text-field>
                 </div>
                 <div>
-                    <v-btn icon tile @click="validateSend" color="#291720" :disabled="!message || message.length === 0">
+                    <v-btn icon tile @click="validateSend" color="#448AFF" :disabled="!message || message.length === 0">
                         <v-icon>mdi-send</v-icon>
                     </v-btn>
                 </div>
@@ -142,13 +143,14 @@ export default {
     grid-template-columns: 1fr auto
 
 #chat-bot-container
-    margin-left: 150px
-    margin-right: 150px
     width: 100%
     display: grid
     grid-template-rows: auto 1fr auto auto
 
 #input-grid
+    background-color: #F5F5F5
+    border-radius: 32px
+    padding: 8px 8px
     display: grid
     grid-template-columns: 1fr auto
     align-items: center
@@ -163,8 +165,5 @@ export default {
 
 #messages-container
     overflow-y: auto
-
-.v-text-field
-    background-color: rgba(0, 0, 0, 0.05)
 
 </style>

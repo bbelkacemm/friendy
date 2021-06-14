@@ -1,8 +1,8 @@
 <template>
-    <v-card @click="clicked" elevation="0" class="ps-4 pe-4 pt-2 pb-2 ma-2" style="background-color: #006C67">
-        <div class="font-weight-bold white--text">
+    <v-card @click="clicked" elevation="2" class="pa-0 ma-2" style="background-color: #F5F5F5; border-radius: 32px;">
+        <v-card-text class="pa-3">
             {{ value }}
-        </div>
+        </v-card-text>
     </v-card>
 </template>
 

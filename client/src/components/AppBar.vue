@@ -11,7 +11,7 @@
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn plain v-bind="attrs" v-on="on">
                         <div class="me-4">{{ getFullName(user) }}</div>
-                        <v-avatar color="grey" size="32"></v-avatar>
+                        <v-avatar color="#F5F5F5" size="32"></v-avatar>
                     </v-btn>
                 </template>
 
@@ -19,7 +19,7 @@
                     <v-list>
                         <v-list-item>
                             <v-list-item-avatar>
-                                <v-avatar color="grey" size="32"></v-avatar>
+                                <v-avatar color="#F5F5F5" size="32"></v-avatar>
                             </v-list-item-avatar>
 
                             <v-list-item-content>
