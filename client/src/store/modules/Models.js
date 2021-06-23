@@ -33,10 +33,10 @@ const actions = {
             data['state'] = null
             data['tag'] = tag
         }
-        const updatedModel = await post(`/models/model/${model.path}`, data)
+        const result = await post(`/models/model/${model.path}`, data)
         context.commit('EDIT_MODEL', {
             index: context.state.models.findIndex(i => i.path === model.path),
-            model: updatedModel,
+            model: result.data,
         })
     },
     deleteModel: async function (context, model) {

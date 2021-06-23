@@ -156,19 +156,19 @@ export default {
             this.selectedContributions = []
         },
         validateContribution: async function () {
-            const contribution = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
+            const result = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
                 'status': 'valid',
                 'user_id': this.user.id,
             })
-            this.editContribution(contribution)
+            this.editContribution(result.data)
             this.selectedContributions = []
         },
         refuseContribution: async function () {
-            const contribution = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
+            const result = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
                 'status': 'invalid',
                 'user_id': this.user.id,
             })
-            this.editContribution(contribution)
+            this.editContribution(result.data)
             this.selectedContributions = []
         },
         removeContribution: async function () {

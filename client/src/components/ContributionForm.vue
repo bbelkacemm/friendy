@@ -373,7 +373,7 @@ export default {
         save: async function () {
             if (this.validate()) {
                 if (this.add) {
-                    const contribution = await post('/contributions/contribution', {
+                    const result = await post('/contributions/contribution', {
                         contribution: {
                             'title': this.title,
                             'description': this.description,
@@ -392,9 +392,9 @@ export default {
                         relatedContexts: this.selectedContexts.map(context => context.code),
                         user_id: this.user.id,
                     })
-                    this.addContribution(contribution)
+                    this.addContribution(result.data)
                 } else if (this.edit) {
-                    const updatedContribution = await post(`/contributions/contribution/${this.contribution.id}`, {
+                    const result = await post(`/contributions/contribution/${this.contribution.id}`, {
                         contribution: {
                             'title': this.title,
                             'description': this.description,
@@ -412,7 +412,7 @@ export default {
                         responses: this.responses,
                         relatedContexts: this.selectedContexts.map(context => context.code),
                     })
-                    this.editContribution(updatedContribution)
+                    this.editContribution(result.data)
                 }
                 this.RESET_PATTERNS_STATE()
                 this.RESET_RESPONSES_STATE()

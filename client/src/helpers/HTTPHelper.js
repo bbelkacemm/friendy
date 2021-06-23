@@ -6,13 +6,17 @@ export async function post(path, data, config) {
     const url = `${ADDRESS}${path}`
     try {
         const response = await axios.post(url, data, config)
-        if (response.status === 201) {
-            return response.data
-        } else if (response.status === 200) {
-            return response.data
+        if (response.status === 201 || response.status === 200) {
+            return {
+                value: true,
+                data: response.data,
+            }
         }
     } catch (error) {
-        return error.response.data
+        return {
+            value: false,
+            message: error.response.data,
+        }
     }
 }
 

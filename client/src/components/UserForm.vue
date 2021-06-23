@@ -113,7 +113,7 @@ export default {
         save: async function () {
             if (this.$refs.form.validate()) {
                 if (this.add) {
-                    const user = await post('/users/user', {
+                    const result = await post('/users/user', {
                         'first_name': this.firstName,
                         'last_name': this.lastName,
                         'username': this.username,
@@ -122,13 +122,13 @@ export default {
                         'gender': this.gender,
                         'role_id': this.role,
                     })
-                    if (user) {
-                        this.addUser(user)
+                    if (result.value) {
+                        this.addUser(result.data)
                         this.dialog = false
                         this.$emit('close')
                     }
                 } else if (this.edit) {
-                    const user = await post(`/users/user/${this.data.id}`, {
+                    const result = await post(`/users/user/${this.data.id}`, {
                         'first_name': this.firstName,
                         'last_name': this.lastName,
                         'username': this.username,
@@ -137,8 +137,8 @@ export default {
                         'gender': this.gender,
                         'role_id': this.role,
                     })
-                    if (user) {
-                        this.editUser(user)
+                    if (result.value) {
+                        this.editUser(result.data)
                         this.dialog = false
                         this.$emit('close')
                     }

@@ -220,19 +220,19 @@ export default {
             if (this.$refs.form.validate()) {
                 if (this.permissions.length !== 0) {
                     if (this.add) {
-                        const role = await post('/roles/role', {
+                        const result = await post('/roles/role', {
                             'label': this.roleLabel,
                             'permissions': this.permissions,
                         })
-                        this.addRole(role)
+                        this.addRole(result.data)
                         this.dialog = false
                         this.$emit('close')
                     } else if (this.edit) {
-                        const role = await post(`/roles/role/${this.roleId}`, {
+                        const result = await post(`/roles/role/${this.roleId}`, {
                             'label': this.roleLabel,
                             'permissions': this.permissions,
                         })
-                        this.editRole(role)
+                        this.editRole(result.data)
                         this.dialog = false
                         this.$emit('close')
                     }

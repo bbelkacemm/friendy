@@ -59,6 +59,15 @@
                 <v-icon v-else>mdi-minus</v-icon>
             </template>
 
+            <template v-slot:item.role.label="{item}">
+                {{ capitalizeFirst(item.role.label) }}
+            </template>
+
+            <template v-slot:item.status="{item}">
+                <v-icon v-if="item.status === 'pending'">mdi-timer-sand</v-icon>
+                <v-icon v-if="item.status === 'valid'" color="green">mdi-check</v-icon>
+                <v-icon v-if="item.status === 'invalid'" color="error">mdi-close</v-icon>
+            </template>
         </v-data-table>
 
         <v-snackbar v-model="errorSnackbar" class="d-print-none" color="error">
@@ -103,6 +112,14 @@ export default {
                 {
                     text: this.$t('gender').toUpperCase(),
                     value: 'gender',
+                },
+                {
+                    text: this.$t('role').toUpperCase(),
+                    value: 'role.label',
+                },
+                {
+                    text: this.$t('status').toUpperCase(),
+                    value: 'status',
                 },
             ],
             selectedUsers: [],

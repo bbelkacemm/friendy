@@ -12,7 +12,8 @@
                                           :label="$t('lastName')"></v-text-field>
                             <v-text-field v-model="username" :rules="[validationRules.required]" outlined dense
                                           :label="$t('username')"></v-text-field>
-                            <v-text-field v-model="password" :rules="[validationRules.required, validationRules.passwordLength]" outlined
+                            <v-text-field v-model="password"
+                                          :rules="[validationRules.required, validationRules.passwordLength]" outlined
                                           dense
                                           :label="$t('password')"
                                           type="password"></v-text-field>
@@ -20,7 +21,8 @@
                                           :rules="[validationRules.required, validationRules.passwordLength, validationRules.passwordMatch(password, confirmPassword)]"
                                           :label="$t('confirmPassword')"
                                           type="password"></v-text-field>
-                            <v-text-field :label="$t('birthdate')" v-model="birthdate" :rules="[validationRules.required]"
+                            <v-text-field :label="$t('birthdate')" v-model="birthdate"
+                                          :rules="[validationRules.required]"
                                           outlined dense
                                           type="date"></v-text-field>
                             <v-combobox :label="$t('gender')" v-model="gender" :rules="[validationRules.required]"
@@ -80,19 +82,32 @@ export default {
         },
         signup: async function () {
             if (this.$refs.form.validate()) {
-                const response = await post('/signup', {
-                    'first_name': this.firstName,
-                    'last_name': this.lastName,
-                    'username': this.username,
-                    'password': this.password,
-                    'birth_date': this.birthdate,
-                    'gender': this.gender === 'male' ? 'm' : 'f',
-                })
-                if (response === true) {
+                let result
+                if (this.$route.query.contributor) {
+                    result = await post('/signup', {
+                        'first_name': this.firstName,
+                        'last_name': this.lastName,
+                        'username': this.username,
+                        'password': this.password,
+                        'birth_date': this.birthdate,
+                        'gender': this.gender === 'male' ? 'm' : 'f',
+                        'status': 'pending',
+                    })
+                } else {
+                    result = await post('/signup', {
+                        'first_name': this.firstName,
+                        'last_name': this.lastName,
+                        'username': this.username,
+                        'password': this.password,
+                        'birth_date': this.birthdate,
+                        'gender': this.gender === 'male' ? 'm' : 'f',
+                    })
+                }
+                if (result.value) {
                     await this.$router.push({ name: 'login' })
                 } else {
                     this.signupErrorSnackbar = true
-                    this.snackbarContent = response
+                    this.snackbarContent = result.message
                 }
             }
         },

@@ -12,7 +12,8 @@
                             <v-text-field v-model="username" class="mb-2" :rules="[validationRules.required]"
                                           :label="$t('username')" outlined dense
                                           hide-details="auto"></v-text-field>
-                            <v-text-field v-model="password" :rules="[validationRules.required, validationRules.passwordLength]"
+                            <v-text-field v-model="password"
+                                          :rules="[validationRules.required, validationRules.passwordLength]"
                                           :label="$t('password')" type="password"
                                           outlined dense
                                           hide-details="auto"></v-text-field>
@@ -59,16 +60,16 @@ export default {
     methods: {
         login: async function () {
             if (this.$refs.form.validate()) {
-                const response = await post('/login', {
+                const result = await post('/login', {
                     'username': this.username,
                     'password': this.password,
                 })
-                if (response !== 'loginError') {
-                    this.setUser(response)
+                if (result.value) {
+                    this.setUser(result.data)
                     await this.$router.push({ name: 'home' })
                 } else {
                     this.loginErrorSnackbar = true
-                    this.snackbarContent = response
+                    this.snackbarContent = result.message
                 }
             }
         },

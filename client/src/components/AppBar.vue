@@ -46,8 +46,13 @@
             <v-icon>mdi-login</v-icon>
         </v-btn>
 
-        <v-btn to="signup" plain text>
+        <v-btn @click="signup" plain text>
             <span class="mr-2">{{ $t('signup') }}</span>
+            <v-icon>mdi-plus</v-icon>
+        </v-btn>
+
+        <v-btn @click="signupContributor" plain text>
+            <span class="mr-2">{{ $t('signupContributor') }}</span>
             <v-icon>mdi-plus</v-icon>
         </v-btn>
     </v-app-bar>
@@ -77,6 +82,12 @@ export default {
             this.$emit('logout')
             await this.$router.push({ name: 'home' })
         },
+        signup: function () {
+            this.$router.push({ name: 'signup', query: { contributor: false } })
+        },
+        signupContributor: function () {
+            this.$router.push({ name: 'signup', query: { contributor: true } })
+        },
         ...mapMutations('authentication', ['RESET_AUTHENTICATION_STATE']),
         ...mapMutations('contributions', ['RESET_CONTRIBUTIONS_STATE']),
         ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
@@ -86,7 +97,7 @@ export default {
         ...mapMutations('responses', ['RESET_RESPONSES_STATE']),
         ...mapMutations('roles', ['RESET_ROLES_STATE']),
         ...mapMutations('users', ['RESET_USERS_STATE']),
-    }
+    },
 }
 </script>
 
