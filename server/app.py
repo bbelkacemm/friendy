@@ -166,11 +166,17 @@ def update_user(id):
         data = request.get_json()
         try:
             user = User.query.filter_by(id=id).first()
-            user.first_name = data['first_name']
-            user.last_name = data['last_name']
-            user.birth_date = data['birth_date']
-            user.gender = data['gender']
-            user.role_id = data['role_id']
+            status = data['status'] if data['status'] else None
+
+            if status is None:
+                user.first_name = data['first_name']
+                user.last_name = data['last_name']
+                user.birth_date = data['birth_date']
+                user.gender = data['gender']
+                user.role_id = data['role_id']
+            else:
+                user.status = status
+
             database.session.commit()
             return user.as_dict(), 200
         except Exception as exception:
