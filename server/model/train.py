@@ -11,8 +11,9 @@ from server.database.models import *
 from nltk.stem import WordNetLemmatizer
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Nadam
+from tensorflow.keras.losses import BinaryCrossentropy
 
 # nltk.download()
 
@@ -130,16 +131,14 @@ def train_model(lang, user_id):
 
     # CREATE/TRAIN/SAVE MODEL
     model = Sequential()
-
     model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
+    model.add(Dropout(.3))
     model.add(Dense(128, activation='relu'))
+    model.add(Dropout(.3))
     model.add(Dense(len(train_y[0]), activation='softmax'))
+    model.compile(loss=BinaryCrossentropy(), optimizer=Nadam(learning_rate=0.01), metrics=['accuracy'])
 
-    sgd = SGD(learning_rate=0.01)
-
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-
-    result = model.fit(x=np.array(train_x), y=np.array(train_y), batch_size=4, epochs=200, verbose=1)
+    result = model.fit(x=np.array(train_x), y=np.array(train_y), validation_split=.25, batch_size=8, epochs=45, verbose=1)
     model.save(f'{Path().absolute()}/{path}/model_{lang}.h5', result)
 
     # SAVE MODEL RECORD
