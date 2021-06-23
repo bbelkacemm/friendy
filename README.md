@@ -63,10 +63,10 @@ npm run serve
 
 ### Client (Web)
 
-- [ ] Authentication
+- [x] Authentication
     - [x] Login
     - [x] Sign up (client)
-    - [ ] Sign up demand (contributor)
+    - [x] Sign up (contributor)
 - [ ] Dashboard
     - [x] Train model
     - [x] Display training state
@@ -97,6 +97,7 @@ npm run serve
     - [x] Add user
     - [x] Edit user
     - [x] Delete user
+    - [x] Validate/Invalidate user
 - [x] Roles & Permissions
     - [x] Display roles/permissions
     - [x] Search for a role
