@@ -72,7 +72,9 @@ def login():
         try:
             user = User.query.filter_by(username=username, password=password).first()
             if user.status == 'pending':
-                return 'accountPendingActivation', 400
+                return 'pendingUser', 400
+            if user.status == 'invalid':
+                return 'invalidUser', 400
             return make_response(jsonify(user.as_dict()), 200)
         except Exception as exception:
             print(exception)
