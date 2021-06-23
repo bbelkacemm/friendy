@@ -66,7 +66,11 @@ export default {
                 })
                 if (result.value) {
                     this.setUser(result.data)
-                    await this.$router.push({ name: 'home' })
+                    if (['guest', 'client', 'contributor'].includes(this.user.role.label)) {
+                        await this.$router.push({ name: 'home' })
+                    } else {
+                        await this.$router.push({ name: 'dashboard' })
+                    }
                 } else {
                     this.loginErrorSnackbar = true
                     this.snackbarContent = result.message
