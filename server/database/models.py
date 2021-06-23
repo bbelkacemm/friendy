@@ -84,19 +84,21 @@ class User(database.Model):
     last_name = Column(String)
     birth_date = Column(Date)
     gender = Column(Enum('f', 'm', name="gender"))
+    status = Column(Enum('valid', 'pending', 'invalid', name='user_status'), default='valid')
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
     role = database.relationship('Role', back_populates='users')
 
     def as_dict(self):
         return dict({
-            "id": self.id,
-            "username": self.username,
-            "firstName": self.first_name,
-            "lastName": self.last_name,
-            "birthdate": self.birth_date,
-            "gender": self.gender,
-            "role": self.role.as_dict(),
+            'id': self.id,
+            'username': self.username,
+            'firstName': self.first_name,
+            'lastName': self.last_name,
+            'birthdate': self.birth_date,
+            'gender': self.gender,
+            'status': self.status,
+            'role': self.role.as_dict(),
         })
 
 

@@ -71,6 +71,8 @@ def login():
 
         try:
             user = User.query.filter_by(username=username, password=password).first()
+            if user.status == 'pending':
+                return 'accountPendingActivation', 400
             return make_response(jsonify(user.as_dict()), 200)
         except Exception as exception:
             print(exception)
@@ -88,11 +90,23 @@ def signup():
         last_name = data['last_name']
         birth_date = data['birth_date']
         gender = data['gender']
+        status = data['status'] if data['status'] else 'valid'
 
         try:
-            role = Role.query.filter_by(label='client').first()
-            database.session.add(User(username=username, password=password, first_name=first_name, last_name=last_name,
-                                      birth_date=birth_date, gender=gender, role_id=role.id))
+            if status != 'valid':
+                role = Role.query.filter_by(label='contributor').first()
+            else:
+                role = Role.query.filter_by(label='client').first()
+            database.session.add(User(
+                username=username,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                birth_date=birth_date,
+                gender=gender,
+                role_id=role.id,
+                status=status,
+            ))
             database.session.commit()
             return 'signupSuccess', 201
         except Exception as exception:
