@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="primary" dark>
+        <v-toolbar dense elevation="0">
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
                 <!-- ADD -->
@@ -20,8 +20,21 @@
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
+
+                <!-- VALIDATE -->
+                <confirmation v-if="selectedUsers[0] && selectedUsers[0].status === 'pending'"
+                              v-on:accept="validateUser" v-on:cancel="selectedUsers = []" type="validate"
+                              :header="$t('validateUserHeader')"
+                              :description="$t('validateUserDescription')"/>
+                <!-- INVALIDATE -->
+                <confirmation v-if="selectedUsers[0] && selectedUsers[0].status === 'pending'"
+                              v-on:accept="invalidateUser" v-on:cancel="selectedUsers = []" type="invalidate"
+                              :header="$t('invalidateUserHeader')"
+                              :description="$t('invalidateUserDescription')"/>
             </v-toolbar-items>
         </v-toolbar>
+
+        <v-divider></v-divider>
 
         <v-data-table :headers="headers"
                       :items="users"
@@ -29,7 +42,8 @@
                       v-model="selectedUsers"
                       :search="search"
                       show-select
-                      class="elevation-1">
+                      single-select
+                      class="elevation-0">
             <template v-slot:top>
                 <v-container fluid>
                     <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
@@ -86,10 +100,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import UserForm from '@/components/UserForm'
+import Confirmation from '@/components/Confirmation'
+import { post } from '@/helpers/HTTPHelper'
 
 export default {
     name: 'Users',
-    components: { UserForm },
+    components: { Confirmation, UserForm },
     data: function () {
         return {
             headers: [
@@ -141,7 +157,25 @@ export default {
             }
             this.selectedUsers = []
         },
-        ...mapActions('users', ['deleteUser']),
+        validateUser: async function () {
+            const result = await post(`/users/user/${this.selectedUsers[0].id}`, {
+                'status': 'valid',
+            })
+            if (result.value) {
+                this.editUser(result.data)
+            }
+            this.selectedUsers = []
+        },
+        invalidateUser: async function () {
+            const result = await post(`/users/user/${this.selectedUsers[0].id}`, {
+                'status': 'invalid',
+            })
+            if (result.value) {
+                this.editUser(result.data)
+            }
+            this.selectedUsers = []
+        },
+        ...mapActions('users', ['editUser', 'deleteUser']),
     },
 }
 </script>
