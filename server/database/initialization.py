@@ -72,7 +72,9 @@ def initialize_database():
                 for label in current_context['responses']:
                     responses.append(Response(label=label, language=collection['lang']))
                 for code in current_context['to']:
-                    contexts.append(Context.query.filter_by(code=code).first())
+                    c = Context.query.filter_by(code=code).first()
+                    if c is not None:
+                        contexts.append(c)
 
             # GET ADMINISTRATOR
             admin = database.session.query(User).filter_by(username='belkacem').first()
