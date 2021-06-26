@@ -470,8 +470,16 @@ def edit_model(path):
                 if model.state == 'disabled':
                     model.tag = 'none'
                 if model.state == 'enabled' and model.tag == 'none':
+                    exists = Model.query.filter_by(tag='dev').first()
+                    if exists:
+                        exists.state = 'disabled'
+                        exists.tag = 'none'
                     model.tag = 'dev'
             if tag is not None:
+                exists = Model.query.filter_by(tag=tag).first()
+                if exists:
+                    exists.state = 'disabled'
+                    exists.tag = 'none'
                 model.tag = tag
 
             database.session.commit()
