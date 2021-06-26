@@ -57,6 +57,8 @@ export default {
                     canUse: this.hasPrivilegesOf('administrator'),
                     initialize: () => {
                         this.setModels()
+                        this.getUsers()
+                        this.getContributions()
                     },
                 },
                 {

@@ -51,6 +51,7 @@ const actions = {
 
 const getters = {
     users: (state) => state.users,
+    pendingContributors: (state) => state.users.filter(user => user.role.label === 'contributor' && user.status === 'pending'),
 }
 
 export default {

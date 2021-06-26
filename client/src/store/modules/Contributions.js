@@ -40,11 +40,12 @@ const actions = {
     },
     deleteContribution: function (context, contribution) {
         context.commit('DELETE_CONTRIBUTION', context.state.contributions.findIndex(item => item.id === contribution.id))
-    }
+    },
 }
 
 const getters = {
     contributions: (state) => state.contributions,
+    pendingContributions: (state) => state.contributions.filter(contribution => contribution.status === 'pending'),
 }
 
 export default {
