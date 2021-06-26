@@ -50,27 +50,27 @@ export default {
                 },
                 {
                     text: this.$t('labelEn'),
-                    value: 'label_en',
+                    value: 'labelEn',
                 },
                 {
                     text: this.$t('labelFr'),
-                    value: 'label_fr',
+                    value: 'labelFr',
                 },
                 {
                     text: this.$t('labelAr'),
-                    value: 'label_ar',
+                    value: 'labelAr',
                 },
                 {
                     text: this.$t('propositionLabelEn'),
-                    value: 'proposition_en',
+                    value: 'propositionEn',
                 },
                 {
                     text: this.$t('propositionLabelFr'),
-                    value: 'proposition_fr',
+                    value: 'propositionFr',
                 },
                 {
                     text: this.$t('propositionLabelAr'),
-                    value: 'proposition_ar',
+                    value: 'propositionAr',
                 },
             ],
             selectedContexts: [],
