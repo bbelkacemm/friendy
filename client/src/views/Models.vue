@@ -1,42 +1,49 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="primary" dark>
-            <v-toolbar-title></v-toolbar-title>
+        <v-toolbar dense elevation="0">
             <v-toolbar-items>
                 <!-- UPDATE STATE-->
-                <v-btn plain v-on:click="updateState" v-if="selectedModels[0]">
-                    <v-icon left>mdi-pencil</v-icon>
-                    {{ $t(selectedModels[0].state === 'enabled' ? 'disable' : 'enable') }}
-                </v-btn>
+                <confirmation v-if="selectedModels[0]"
+                              :type="selectedModels[0].state === 'enabled' ? 'disable' : 'enable'"
+                              v-on:accept="updateState" :header="$t('enableModelHeader')"
+                              :description="$t('enableModelDescription')"/>
                 <v-btn plain disabled v-else>
                     <v-icon left>mdi-pencil</v-icon>
                     {{ $t('disable') }}/{{ $t('enable') }}
                 </v-btn>
 
-                <!-- UPDATE STATE-->
-                <v-btn plain v-on:click="updateTag" v-if="selectedModels[0] && selectedModels[0].state === 'enabled'">
-                    <v-icon left>mdi-pencil</v-icon>
-                    {{ $t(selectedModels[0].tag === 'dev' ? 'setProd' : 'setDev') }}
-                </v-btn>
+                <!-- UPDATE TAG-->
+                <confirmation v-if="selectedModels[0] && selectedModels[0].state === 'enabled'"
+                              :type="selectedModels[0].tag === 'dev' ? 'setProd' : 'setDev'"
+                              v-on:accept="updateTag" :header="$t('setModelTagHeader')"
+                              :description="$t('setModelTagDescription')"/>
                 <v-btn plain disabled v-else>
                     <v-icon left>mdi-pencil</v-icon>
                     {{ $t('setDev') }}/{{ $t('setProd') }}
                 </v-btn>
 
                 <!-- DELETE -->
-                <v-btn plain v-on:click="removeModel" :disabled="!selectedModels[0]">
+                <confirmation v-if="selectedModels[0]"
+                              type="delete"
+                              v-on:accept="removeModel" :header="$t('deleteHeader')"
+                              :description="$t('deleteDescription')"/>
+                <v-btn v-else plain disabled>
                     <v-icon left>mdi-delete</v-icon>
                     {{ $t('delete') }}
                 </v-btn>
             </v-toolbar-items>
         </v-toolbar>
 
+        <v-divider></v-divider>
+
         <v-data-table :headers="headers"
                       :items="models"
                       :items-per-page="14"
                       v-model="selectedModels"
+                      sort-by="path"
+                      item-key="path"
                       show-select
-                      class="elevation-1">
+                      single-select>
             <template v-slot:item.path="{item}">
                 <v-icon>mdi-folder</v-icon>
                 ./server/model/output/{{ item.path }}
@@ -72,9 +79,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Confirmation from '@/components/Confirmation'
 
 export default {
     name: 'Models',
+    components: { Confirmation },
     data: function () {
         return {
             headers: [
@@ -112,6 +121,7 @@ export default {
                 state: this.selectedModels[0].state === 'enabled' ? 'disabled' : 'enabled',
                 tag: false,
             })
+            await this.setModels()
             this.selectedModels = []
         },
         updateTag: async function () {
@@ -120,13 +130,14 @@ export default {
                 state: false,
                 tag: this.selectedModels[0].tag === 'dev' ? 'prod' : 'dev',
             })
+            await this.setModels()
             this.selectedModels = []
         },
         removeModel: async function () {
             await this.deleteModel(this.selectedModels[0])
             this.selectedModels = []
         },
-        ...mapActions('models', ['editModel', 'deleteModel']),
+        ...mapActions('models', ['setModels', 'editModel', 'deleteModel']),
     },
 }
 </script>

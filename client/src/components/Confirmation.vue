@@ -11,6 +11,31 @@
                 <v-icon left>mdi-close</v-icon>
                 {{ $t('invalidate') }}
             </v-btn>
+            <!-- ENABLE -->
+            <v-btn v-if="type === 'enable'" color="success" v-bind="attrs" v-on="on" tile text plain>
+                <v-icon left>mdi-check</v-icon>
+                {{ $t('enable') }}
+            </v-btn>
+            <!-- DISABLE -->
+            <v-btn v-if="type === 'disable'" color="error" v-bind="attrs" v-on="on" tile text plain>
+                <v-icon left>mdi-close</v-icon>
+                {{ $t('disable') }}
+            </v-btn>
+            <!-- SET PROD -->
+            <v-btn v-if="type === 'setProd'" color="success" v-bind="attrs" v-on="on" tile text plain>
+                <v-icon left>mdi-check</v-icon>
+                {{ $t('setProd') }}
+            </v-btn>
+            <!-- SET DEV -->
+            <v-btn v-if="type === 'setDev'" color="secondary" v-bind="attrs" v-on="on" tile text plain>
+                <v-icon left>mdi-close</v-icon>
+                {{ $t('setDev') }}
+            </v-btn>
+            <!-- DISABLE -->
+            <v-btn v-if="type === 'delete'" color="error" v-bind="attrs" v-on="on" tile text plain>
+                <v-icon left>mdi-delete</v-icon>
+                {{ $t('delete') }}
+            </v-btn>
         </template>
 
         <v-card>
