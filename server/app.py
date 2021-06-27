@@ -1,4 +1,5 @@
 import shutil
+import json
 
 from pathlib import Path
 from flask import Flask, jsonify, make_response
@@ -7,7 +8,7 @@ from flask_migrate import Migrate
 from sqlalchemy.exc import SQLAlchemyError
 
 from database.models import *
-from database.initialization import initialize_database
+from database.initialization import initialize_database, save_data
 from flask_cors import CORS
 from model.use import generate_response
 from model.train import train_model
@@ -507,6 +508,18 @@ def delete_model(path):
         except SQLAlchemyError as exception:
             print(exception)
             return 400
+
+
+# IMPORT DATA
+@app.route('/data/import/<lang>', methods=['POST'])
+def import_data(lang):
+    if request.method == 'POST':
+        try:
+            save_data(json.loads(request.data), lang)
+            return 'OK', 200
+        except Exception as exception:
+            print(exception)
+            return 'Failed', 400
 
 
 if __name__ == '__main__':

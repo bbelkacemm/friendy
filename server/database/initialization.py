@@ -4,6 +4,54 @@ from pathlib import Path
 import pandas as pd
 
 
+def save_data(data, lang):
+    for index in reversed(range(len(data))):
+        context = dict()
+        patterns = []
+        responses = []
+        contexts = []
+
+        current_context = data[index]
+        context['code'] = current_context['code']
+        context[f'label_{lang}'] = current_context['tag']
+        context[f'proposition_{lang}'] = current_context['proposition'] if not pd.isnull(
+            current_context['proposition']) else None
+
+        for label in current_context['patterns']:
+            patterns.append(Pattern(label=label, language=lang))
+        for label in current_context['responses']:
+            responses.append(Response(label=label, language=lang))
+        for code in current_context['to']:
+            c = Context.query.filter_by(code=code).first()
+            if c is not None:
+                contexts.append(c)
+
+        # GET ADMINISTRATOR
+        admin = database.session.query(User).filter_by(username='belkacem').first()
+        # SAVE CONTRIBUTION
+        contribution = Contribution(
+            title='NO TITLE',
+            status='valid',
+            contributor_id=admin.id,
+            validator_id=admin.id,
+            validated_at=datetime.datetime.utcnow(),
+            context=Context(
+                code=context['code'],
+                label_en=context['label_en'] if 'label_en' in context else None,
+                label_fr=context['label_fr'] if 'label_fr' in context else None,
+                label_ar=context['label_ar'] if 'label_ar' in context else None,
+                proposition_en=context['proposition_en'] if 'proposition_en' in context else None,
+                proposition_fr=context['proposition_fr'] if 'proposition_fr' in context else None,
+                proposition_ar=context['proposition_ar'] if 'proposition_ar' in context else None,
+                patterns=patterns,
+                responses=responses,
+                contexts=contexts,
+            )
+        )
+        database.session.add(contribution)
+        database.session.commit()
+
+
 def initialize_database():
     # INITIALIZE ROLES
     if database.session.query(Role).count() == 0:
