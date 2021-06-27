@@ -1,75 +1,120 @@
 <template>
-    <v-container fluid>
-        <v-row id="train-container" class="grey lighten-4 ma-2">
-            <v-col align-self="center">
-                <div v-if="isTraining">
-                    {{ $t('isTraining') }}
-                </div>
-                <div v-else class="">
-                    <div v-if="models.length === 0">
-                        {{ $t('noModel') }}
+    <v-container fluid class="pa-4">
+        <v-row no-gutters>
+            <!-- PENDING CONTRIBUTORS -->
+            <v-col class="dashboard-card-border three-rows pa-2 ma-2">
+                <div class="two-columns">
+                    <div class="subtitle-1">
+                        <v-icon>mdi-timer-sand</v-icon>
+                        {{ pendingContributors.length }} {{ $t('pendingContributors') }}
                     </div>
-                    <div v-else>
-                        {{ $t('lastTrain') }} {{ formatDate(models[models.length - 1]['createdAt'], true).toUpperCase()
-                        }}
-                    </div>
+                    <v-btn to="users" target="_blank" color="success" tile plain text>
+                        {{ $t('users') }}
+                        <v-icon right>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
                 </div>
+                <v-divider></v-divider>
+                <v-data-table :headers="pendingContributorsHeaders" :items="pendingContributors"
+                              dense></v-data-table>
             </v-col>
-            <v-col align-self="center">
-                <v-btn @click="trainModel" plain class="primary">
-                    <v-icon v-if="!isTraining" left>mdi-replay</v-icon>
-                    <v-progress-circular class="me-4" size="24" v-else indeterminate
-                                         color="white"></v-progress-circular>
-                    {{ $t('trainModel') }}
-                </v-btn>
+            <!-- PENDING CONTRIBUTIONS -->
+            <v-col class="dashboard-card-border three-rows pa-2 ma-2">
+                <div class="two-columns">
+                    <div class="subtitle-1">
+                        <v-icon>mdi-timer-sand</v-icon>
+                        {{ pendingContributors.length }} {{ $t('pendingContributions') }}
+                    </div>
+                    <v-btn to="contributions" target="_blank" color="success" tile plain text>
+                        {{ $t('contributions') }}
+                        <v-icon right>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
+                </div>
+                <v-divider></v-divider>
+                <v-data-table :headers="pendingContributionsHeaders" :items="pendingContributions" dense>
+                    <template v-slot:item.contributor="{item}">
+                        <div v-if="item.contributor">
+                            {{ item.contributor.firstName + ' ' + item.contributor.lastName }}
+                        </div>
+                        <div v-else>
+                            <v-icon>mdi-minus</v-icon>
+                        </div>
+                    </template>
+                    <template v-slot:item.createdAt="{item}">
+                        <div v-if="item['createdAt']">
+                            {{ formatDate(item['createdAt']).toUpperCase() }}
+                        </div>
+                        <v-icon v-else>mdi-minus</v-icon>
+                    </template>
+                </v-data-table>
             </v-col>
         </v-row>
         <v-row no-gutters>
-            <!-- PENDING CONTRIBUTORS -->
-            <v-col>
-                <v-container fluid>
-                    <div class="pb-2" id="pending-contributors-header">
-                        <div class="subtitle-1">{{ pendingContributors.length }} {{ $t('pendingContributors') }}</div>
-                        <v-btn to="users" target="_blank" tile plain text>
-                            {{ $t('users') }}
-                            <v-icon right>mdi-arrow-top-right-thick</v-icon>
-                        </v-btn>
+            <!-- IMPORT DATA -->
+            <v-col class="three-rows dashboard-card-border pa-2 ma-2">
+                <div class="two-columns">
+                    <div>
+                        <v-icon>mdi-database</v-icon>
+                        {{ $t('importData') }}
                     </div>
-                    <v-divider></v-divider>
-                    <v-data-table :headers="pendingContributorsHeaders" :items="pendingContributors"
-                                  dense></v-data-table>
-                </v-container>
+                    <v-btn to="contexts" target="_blank" color="success" tile plain text>
+                        {{ $t('contexts') }}
+                        <v-icon right>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
+                </div>
+                <v-divider></v-divider>
+                <v-form ref="importForm" v-on:submit.prevent="">
+                    <v-row>
+                        <v-col>
+                            <v-file-input v-model="file" :rules="[validationRules.required]" hide-details="auto"
+                                          outlined dense></v-file-input>
+                        </v-col>
+                        <v-col>
+                            <v-autocomplete class="mb-2" :label="$t('language').toUpperCase()"
+                                            v-model="lang"
+                                            :rules="[validationRules.required]"
+                                            hide-details="auto" :items="languagesList" outlined
+                                            dense></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-btn v-on:click="importData" class="primary" block plain>
+                        <v-icon left>mdi-database-import</v-icon>
+                        {{ $t('import') }}
+                    </v-btn>
+                </v-form>
             </v-col>
-            <v-divider vertical></v-divider>
-            <!-- PENDING CONTRIBUTIONS -->
-            <v-col>
-                <v-container fluid>
-                    <div class="pb-2" id="pending-contributions-header">
-                        <div class="subtitle-1">{{ pendingContributors.length }} {{ $t('pendingContributions') }}</div>
-                        <v-btn to="contributions" target="_blank" tile plain text>
-                            {{ $t('contributions') }}
-                            <v-icon right>mdi-arrow-top-right-thick</v-icon>
-                        </v-btn>
+            <!-- TRAIN MODEL -->
+            <v-col class="three-rows dashboard-card-border pa-2 ma-2">
+                <div class="two-columns">
+                    <div>
+                        <v-icon>mdi-brain</v-icon>
+                        {{ capitalizeFirst($t('trainModel')) }}
                     </div>
-                    <v-divider></v-divider>
-
-                    <v-data-table :headers="pendingContributionsHeaders" :items="pendingContributions" dense>
-                        <template v-slot:item.contributor="{item}">
-                            <div v-if="item.contributor">
-                                {{ item.contributor.firstName + ' ' + item.contributor.lastName }}
-                            </div>
-                            <div v-else>
-                                <v-icon>mdi-minus</v-icon>
-                            </div>
-                        </template>
-                        <template v-slot:item.createdAt="{item}">
-                            <div v-if="item['createdAt']">
-                                {{ formatDate(item['createdAt']).toUpperCase() }}
-                            </div>
-                            <v-icon v-else>mdi-minus</v-icon>
-                        </template>
-                    </v-data-table>
-                </v-container>
+                    <v-btn to="models" target="_blank" color="success" tile plain text>
+                        {{ $t('models') }}
+                        <v-icon right>mdi-arrow-top-right-thick</v-icon>
+                    </v-btn>
+                </div>
+                <v-divider></v-divider>
+                <div class="center-items">
+                    <div v-if="isTraining" class="justify-center">
+                        {{ $t('isTraining') }}
+                    </div>
+                    <div v-else>
+                        <div v-if="models.length === 0">
+                            {{ $t('noModel') }}
+                        </div>
+                        <div v-else>
+                            {{ $t('lastTrain') }}
+                            {{ formatDate(models[models.length - 1]['createdAt'], true).toUpperCase() }}
+                        </div>
+                    </div>
+                </div>
+                <v-btn @click="trainModel" plain class="primary" block>
+                    <v-icon v-if="!isTraining" left>mdi-replay</v-icon>
+                    <v-progress-circular class="me-2" size="16" v-else indeterminate
+                                         color="white"></v-progress-circular>
+                    {{ $t('trainModel') }}
+                </v-btn>
             </v-col>
         </v-row>
     </v-container>
@@ -84,6 +129,8 @@ export default {
     data: function () {
         return {
             isTraining: false,
+            file: null,
+            lang: null,
             pendingContributorsHeaders: [
                 {
                     text: this.$t('username').toUpperCase(),
@@ -120,6 +167,15 @@ export default {
         ...mapGetters('contributions', ['pendingContributions']),
     },
     methods: {
+        importData: function () {
+            if (this.$refs.importForm.validate()) {
+                post(`/data/import/${this.lang}`, this.file, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+            }
+        },
         trainModel: async function () {
             this.isTraining = true
             const result = await post('/dashboard/train', {
@@ -142,13 +198,4 @@ export default {
     display: grid
     grid-template-columns: 1fr auto
 
-#pending-contributors-header
-    display: grid
-    grid-template-columns: 1fr auto
-    align-items: center
-
-#pending-contributions-header
-    display: grid
-    grid-template-columns: 1fr auto
-    align-items: center
 </style>
