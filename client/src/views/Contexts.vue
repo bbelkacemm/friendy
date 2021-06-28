@@ -1,7 +1,6 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="primary" dark>
-            <v-toolbar-title></v-toolbar-title>
+        <v-toolbar dense elevation="0">
             <v-toolbar-items>
                 <!-- DETAILS -->
                 <context v-if="selectedContexts[0]" :context="selectedContexts[0]" v-on:close="clearSelection"/>
@@ -12,14 +11,15 @@
             </v-toolbar-items>
         </v-toolbar>
 
+        <v-divider></v-divider>
+
         <v-data-table :headers="headers"
                       :items="contexts"
                       :items-per-page="15"
                       v-model="selectedContexts"
                       :search="search"
                       show-select
-                      single-select
-                      class="elevation-1">
+                      single-select>
             <template v-slot:top>
                 <v-container fluid>
                     <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense

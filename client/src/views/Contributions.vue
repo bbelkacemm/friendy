@@ -1,7 +1,6 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="primary" dark>
-            <v-toolbar-title></v-toolbar-title>
+        <v-toolbar dense elevation="0">
             <v-toolbar-items>
                 <contribution-form add v-on:close="onClose" :key="`${formKey}-add`"/>
                 <contribution-form v-if="selectedContributions[0] && selectedContributions.length === 1" edit
@@ -12,33 +11,26 @@
                     {{ $t('edit') }}
                 </v-btn>
 
-                <v-btn v-on:click="validateContribution"
-                       v-if="selectedContributions[0] && selectedContributions.length === 1 && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'invalid')"
-                       plain>
-                    <v-icon left>mdi-check</v-icon>
-                    {{ $t('validate') }}
-                </v-btn>
-                <v-btn v-else plain disabled>
-                    <v-icon left>mdi-check</v-icon>
-                    {{ $t('validate') }}
-                </v-btn>
-                <v-btn v-on:click="refuseContribution"
-                       v-if="selectedContributions[0] && selectedContributions.length === 1 && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'valid')"
-                       plain>
-                    <v-icon left>mdi-close</v-icon>
-                    {{ $t('refuse') }}
-                </v-btn>
-                <v-btn v-else disabled plain>
-                    <v-icon left>mdi-close</v-icon>
-                    {{ $t('refuse') }}
-                </v-btn>
+                <confirmation
+                    v-if="selectedContributions[0] && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'invalid')"
+                    type="validate" v-on:accept="validateContribution"
+                    v-on:cancel="this.selectedContributions = []" :header="$t('validateContributionHeader')"
+                    :description="$t('validateContributionDescription')"/>
 
-                <v-btn v-if="selectedContributions[0]" plain v-on:click="removeContribution">
-                    <v-icon left>mdi-delete</v-icon>
-                    {{ $t('delete') }}
-                </v-btn>
+                <confirmation
+                    v-if="selectedContributions[0] && (selectedContributions[0].status === 'pending' || selectedContributions[0].status === 'valid')"
+                    type="invalidate" v-on:accept="invalidateContribution"
+                    v-on:cancel="this.selectedContributions = []" :header="$t('invalidateContributionHeader')"
+                    :description="$t('invalidateContributionDescription')"/>
+
+                <confirmation type="delete" v-on:accept="removeContribution"
+                              v-on:cancel="this.selectedContributions = []"
+                              :header="$t('deleteHeader')" :description="$t('deleteDescription')"
+                              :disabled="selectedContributions.length !== 1 || selectedContributions.length === 0"/>
             </v-toolbar-items>
         </v-toolbar>
+
+        <v-divider></v-divider>
 
         <v-data-table :headers="headers"
                       :items="contributions"
@@ -47,7 +39,7 @@
                       :search="search"
                       v-model="selectedContributions"
                       show-select
-                      class="elevation-1">
+                      single-select>
             <template v-slot:top>
                 <v-container fluid>
                     <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
@@ -106,10 +98,11 @@
 import { mapActions, mapGetters } from 'vuex'
 import ContributionForm from '@/components/ContributionForm'
 import { post, remove } from '@/helpers/HTTPHelper'
+import Confirmation from '@/components/Confirmation'
 
 export default {
     name: 'Contributions',
-    components: { ContributionForm },
+    components: { Confirmation, ContributionForm },
     data: function () {
         return {
             headers: [
@@ -163,7 +156,7 @@ export default {
             this.editContribution(result.data)
             this.selectedContributions = []
         },
-        refuseContribution: async function () {
+        invalidateContribution: async function () {
             const result = await post(`/contributions/contribution/${this.selectedContributions[0].id}`, {
                 'status': 'invalid',
                 'user_id': this.user.id,

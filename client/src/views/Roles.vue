@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-        <v-toolbar dense elevation="0" class="primary" dark>
+        <v-toolbar dense elevation="0">
             <v-toolbar-title></v-toolbar-title>
             <v-toolbar-items>
                 <role-form add v-on:close="formKey++" :key="`${formKey}-add`"/>
@@ -12,21 +12,20 @@
                     {{ $t('edit') }}
                 </v-btn>
 
-                <v-btn plain :disabled="selectedRoles.length !== 1 || selectedRoles.length === 0"
-                       v-on:click="removeRole">
-                    <v-icon left>mdi-delete</v-icon>
-                    {{ $t('delete') }}
-                </v-btn>
+                <confirmation type="delete" v-on:accept="removeRole" v-on:cancel="this.selectedRoles = []"
+                              :header="$t('deleteHeader')" :description="$t('deleteDescription')"
+                              :disabled="selectedRoles.length !== 1 || selectedRoles.length === 0"/>
             </v-toolbar-items>
         </v-toolbar>
+
+        <v-divider></v-divider>
 
         <v-data-table :headers="headers"
                       :items="roles"
                       :items-per-page="14"
                       :search="search"
                       v-model="selectedRoles"
-                      show-select
-                      class="elevation-1">
+                      show-select single-select>
             <template v-slot:top>
                 <v-container fluid>
                     <v-text-field :label="$t('search').toUpperCase()" v-model="search" hide-details="auto" dense
@@ -44,10 +43,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import RoleForm from '@/components/RoleForm'
+import Confirmation from '@/components/Confirmation'
 
 export default {
     name: 'Roles',
-    components: { RoleForm },
+    components: { Confirmation, RoleForm },
     data: function () {
         return {
             headers: [

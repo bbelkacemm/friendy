@@ -31,8 +31,8 @@
                 <v-icon left>mdi-close</v-icon>
                 {{ $t('setDev') }}
             </v-btn>
-            <!-- DISABLE -->
-            <v-btn v-if="type === 'delete'" color="error" v-bind="attrs" v-on="on" tile text plain>
+            <!-- DELETE -->
+            <v-btn v-if="type === 'delete'" color="error" v-bind="attrs" v-on="on" tile text plain :disabled="disabled">
                 <v-icon left>mdi-delete</v-icon>
                 {{ $t('delete') }}
             </v-btn>
@@ -69,6 +69,7 @@ export default {
         header: String,
         description: String,
         type: String,
+        disabled: Boolean,
     },
     data: function () {
         return {

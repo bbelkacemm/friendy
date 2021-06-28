@@ -26,29 +26,29 @@
                         <v-row>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('labelEn') }}</div>
-                                <div>{{ context['label_en'] }}</div>
+                                <div>{{ context['labelEn'] }}</div>
                             </v-col>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('labelFr') }}</div>
-                                <div>{{ context['label_fr'] }}</div>
+                                <div>{{ context['labelFr'] }}</div>
                             </v-col>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('labelAr') }}</div>
-                                <div>{{ context['label_ar'] }}</div>
+                                <div>{{ context['labelAr'] }}</div>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('propositionEn') }}</div>
-                                <div>{{ context['proposition_en'] }}</div>
+                                <div>{{ context['propositionEn'] }}</div>
                             </v-col>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('propositionFr') }}</div>
-                                <div>{{ context['proposition_fr'] }}</div>
+                                <div>{{ context['propositionFr'] }}</div>
                             </v-col>
                             <v-col>
                                 <div class="font-weight-bold">{{ $t('propositionAr') }}</div>
-                                <div>{{ context['proposition_ar'] }}</div>
+                                <div>{{ context['propositionAr'] }}</div>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -59,7 +59,7 @@
                     </v-tabs>
                     <v-tabs-items v-model="tab">
                         <v-tab-item v-for="dataItem in tabsData" :key="dataItem.key">
-                            <v-data-table :headers="dataItem.headers" :items="dataItem.list"></v-data-table>
+                            <v-data-table class="pa-2" :headers="dataItem.headers" :items="dataItem.list" dense></v-data-table>
                         </v-tab-item>
                     </v-tabs-items>
                 </v-card-text>
