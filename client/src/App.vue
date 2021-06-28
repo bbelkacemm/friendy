@@ -2,7 +2,7 @@
     <v-app>
         <app-bar v-on:clicked="clicked" v-on:logout="drawer = false"/>
 
-        <navigation-drawer :drawer="drawer"></navigation-drawer>
+        <navigation-drawer v-if="drawer" :drawer="drawer"></navigation-drawer>
 
         <v-main>
             <router-view></router-view>

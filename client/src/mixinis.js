@@ -31,9 +31,9 @@ Vue.mixin({
                 },
             ],
             validationRules: {
-                required: value => !!value || this.$t('requiredField'),
-                passwordMatch: (password, confirm) => password === confirm || this.$t('passwordMatch'),
-                passwordLength: (password) => password ? password.length <= 60 && password.length >= 8 || this.$t('passwordLength') : '',
+                required: value => !!value || this.capitalizeFirst(this.$t('requiredField')),
+                passwordMatch: (password, confirm) => password === confirm || this.capitalizeFirst(this.$t('passwordMatch')),
+                passwordLength: (password) => password ? password.length <= 60 && password.length >= 8 || this.capitalizeFirst(this.$t('passwordLength')) : '',
             },
         }
     },

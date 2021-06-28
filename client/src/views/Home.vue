@@ -26,7 +26,7 @@
                     <proposition v-on:clicked="send($event)" class="proposition-item" :value="item" :key="index"/>
                 </template>
             </div>
-            <v-form v-on:submit.prevent="" ref="form" id="input-grid" class="ma-2">
+            <v-form v-on:submit.prevent="" ref="form" class="ma-2 input-grid">
                 <div>
                     <v-text-field v-model="message" hide-details="true" dense solo flat background-color="transparent"
                                   outline="false"></v-text-field>
@@ -49,10 +49,47 @@
             </template>
         </v-snackbar>
     </v-container>
-    <v-container v-else>
-        <div class="title font-weight-bold text-center ma-10">
-            Welcome!
+    <v-container fluid class="pa-0" v-else>
+        <div class="two-equal-columns">
+            <div class="center-items">
+                <bot class="ma-16" width="400"/>
+            </div>
+            <div class="pa-4">
+                <div class="text-h2">
+                    {{ capitalizeFirst($t('homeHeader')) }}
+                </div>
+                <div class="text-h5 mt-10">
+                    {{ capitalizeFirst($t('homeDescription')) }}
+                </div>
+                <v-btn class="mt-10 rounded-pill primary" @click="signup" text>
+                    {{ $t('signup') }}
+                    <v-icon right>mdi-arrow-right</v-icon>
+                </v-btn>
+            </div>
         </div>
+        <v-container fluid class="center-items pa-0 grey lighten-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120">
+                <path fill="white" fill-opacity="1" d="M0,64L1440,96L1440,0L0,0Z"></path>
+            </svg>
+            <div class="text-h5 grey--text text-uppercase mb-4 font-weight-bold">
+                {{ $t('features') }}
+            </div>
+            <div class="two-columns">
+                <v-card v-for="feature in features" :key="feature.title"
+                        class="ma-2 elevation-0 transparent text-center" width="350" height="250">
+                    <v-card-text class="center-items">
+                        <div>
+                            <v-icon size="64" color="black">{{ feature.icon }}</v-icon>
+                        </div>
+                        <div class="text-h6 ma-4">{{ feature.title }}</div>
+                        <div class="subtitle-2 grey--text">{{ feature.description }}</div>
+                    </v-card-text>
+                </v-card>
+            </div>
+        </v-container>
+        <footer class="pa-2 pt-10 center-items grey lighten-4 grey--text">
+            Friendy © {{ new Date().getFullYear() }}
+        </footer>
     </v-container>
 </template>
 
@@ -61,10 +98,11 @@ import Proposition from '@/components/Proposition'
 import Message from '@/components/Message'
 import { get } from '@/helpers/HTTPHelper'
 import { mapActions, mapGetters } from 'vuex'
+import Bot from '@/assets/bot.svg'
 
 export default {
     name: 'Home',
-    components: { Message, Proposition },
+    components: { Message, Proposition, Bot },
     mounted: function () {
         this.scrollToBottom()
     },
@@ -75,6 +113,20 @@ export default {
             isProd: true,
             errorSnackbar: false,
             errorMessage: null,
+            features: [
+                {
+                    icon: 'mdi-robot',
+                    iconColor: 'primary',
+                    title: this.capitalizeFirst(this.$t('botTitle')),
+                    description: this.capitalizeFirst(this.$t('botDescription')),
+                },
+                {
+                    icon: 'mdi-doctor',
+                    iconColor: 'success',
+                    title: this.capitalizeFirst(this.$t('contributionsTitle')),
+                    description: this.capitalizeFirst(this.$t('contributionsDescription')),
+                },
+            ],
         }
     },
     computed: {
@@ -94,6 +146,9 @@ export default {
         ...mapGetters('propositions', ['propositions']),
     },
     methods: {
+        signup: function () {
+            this.$router.push({ name: 'signup', query: { contributor: false } })
+        },
         validateSend: async function () {
             if (this.$refs.form.validate()) {
                 const m = this.message
@@ -146,14 +201,6 @@ export default {
     width: 100%
     display: grid
     grid-template-rows: auto 1fr auto auto
-
-#input-grid
-    background-color: #F5F5F5
-    border-radius: 32px
-    padding: 8px 8px
-    display: grid
-    grid-template-columns: 1fr auto
-    align-items: center
 
 #propositions-container
     display: flex

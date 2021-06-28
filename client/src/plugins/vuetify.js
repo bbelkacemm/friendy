@@ -4,4 +4,10 @@ import '@/styles/style.sass'
 
 Vue.use(Vuetify)
 
-export default new Vuetify({})
+export default new Vuetify({
+    theme: {
+        light: {
+            primary: '#1976D2'
+        }
+    }
+})

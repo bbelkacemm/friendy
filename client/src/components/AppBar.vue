@@ -39,21 +39,20 @@
         </div>
     </v-app-bar>
     <v-app-bar v-else app elevation="0" color="white">
+        <v-app-bar-title>Friendy</v-app-bar-title>
+
+        <v-btn to="home" plain text class="ms-4 rounded-pill">
+            {{ $t('home') }}
+        </v-btn>
+
         <v-spacer></v-spacer>
 
-        <v-btn to="login" plain text>
-            <span class="mr-2">{{ $t('login') }}</span>
-            <v-icon>mdi-login</v-icon>
+        <v-btn to="login" plain text class="rounded-pill">
+            {{ $t('login') }}
         </v-btn>
 
-        <v-btn @click="signup" plain text>
-            <span class="mr-2">{{ $t('signup') }}</span>
-            <v-icon>mdi-plus</v-icon>
-        </v-btn>
-
-        <v-btn @click="signupContributor" plain text>
+        <v-btn @click="signupContributor" plain class="success rounded-pill">
             <span class="mr-2">{{ $t('signupContributor') }}</span>
-            <v-icon>mdi-plus</v-icon>
         </v-btn>
     </v-app-bar>
 </template>
@@ -81,9 +80,6 @@ export default {
             this.RESET_USERS_STATE()
             this.$emit('logout')
             await this.$router.push({ name: 'home' })
-        },
-        signup: function () {
-            this.$router.push({ name: 'signup', query: { contributor: false } })
         },
         signupContributor: function () {
             this.$router.push({ name: 'signup', query: { contributor: true } })

@@ -1,35 +1,37 @@
 <template>
-    <v-container fluid>
-        <v-row>
-            <v-col></v-col>
-            <v-col cols="6">
-                <v-form v-on:submit.prevent="" ref="form">
-                    <v-card elevation="1"
-                            outlined
-                            shaped
-                            tile>
-                        <v-card-text>
-                            <v-text-field v-model="username" class="mb-2" :rules="[validationRules.required]"
-                                          :label="$t('username')" outlined dense
-                                          hide-details="auto"></v-text-field>
-                            <v-text-field v-model="password"
-                                          :rules="[validationRules.required, validationRules.passwordLength]"
-                                          :label="$t('password')" type="password"
-                                          outlined dense
-                                          hide-details="auto"></v-text-field>
-                        </v-card-text>
-
-                        <v-card-actions>
-                            <v-btn block @click="login" color="primary" text tile elevation="0">
-                                <span class="mr-2">{{ $t('login') }}</span>
-                                <v-icon>mdi-login</v-icon>
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-form>
-            </v-col>
-            <v-col></v-col>
-        </v-row>
+    <v-container fluid class="two-equal-columns full-height center-items">
+        <v-card tile elevation="0" width="70%">
+            <v-form v-on:submit.prevent="" ref="loginForm">
+                <v-card-text class="pa-0">
+                    <div class="input-grid mb-2">
+                        <v-text-field v-model="username" :rules="[validationRules.required]"
+                                      :label="capitalizeFirst($t('username'))" dense solo flat
+                                      background-color="transparent"
+                                      prepend-inner-icon="mdi-account"
+                                      hide-details="auto"></v-text-field>
+                    </div>
+                    <div class="input-grid">
+                        <v-text-field v-model="password"
+                                      :rules="[validationRules.required, validationRules.passwordLength]"
+                                      :label="capitalizeFirst($t('password'))" type="password"
+                                      prepend-inner-icon="mdi-lock"
+                                      dense solo flat background-color="transparent"
+                                      hide-details="auto"></v-text-field>
+                    </div>
+                </v-card-text>
+                <v-card-actions class="pa-0 mt-4">
+                    <v-btn @click="signup" color="secondary" class="rounded-pill" plain text>
+                        {{ $t('signup') }}
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn v-on:click="login" class="primary rounded-pill" text tile elevation="0">
+                        <v-icon left>mdi-login</v-icon>
+                        {{ $t('login') }}
+                    </v-btn>
+                </v-card-actions>
+            </v-form>
+        </v-card>
+        <bot-welcome width="450"/>
         <v-snackbar v-model="loginErrorSnackbar" class="d-print-none" color="error">
             <template v-slot:default>
                 {{ $t(snackbarContent) }}
@@ -46,9 +48,11 @@
 <script>
 import { post } from '@/helpers/HTTPHelper'
 import { mapActions } from 'vuex'
+import BotWelcome from '@/assets/bot-welcome.svg'
 
 export default {
     name: 'Login',
+    components: { BotWelcome },
     data: function () {
         return {
             username: null,
@@ -59,7 +63,7 @@ export default {
     },
     methods: {
         login: async function () {
-            if (this.$refs.form.validate()) {
+            if (this.$refs.loginForm.validate()) {
                 const result = await post('/login', {
                     'username': this.username,
                     'password': this.password,
@@ -76,6 +80,9 @@ export default {
                     this.snackbarContent = result.message
                 }
             }
+        },
+        signup: function () {
+            this.$router.push({ name: 'signup', query: { contributor: false } })
         },
         ...mapActions('authentication', ['setUser']),
     },
