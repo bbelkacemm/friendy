@@ -49,6 +49,13 @@ npm run serve
 
 6. Train the model from the dashboard view
 
+## Notes
+
+- Change the date style 
+```sql
+ALTER DATABASE postgres SET datestyle TO "ISO, DMY";
+```
+
 ## Features
 
 ### Server
