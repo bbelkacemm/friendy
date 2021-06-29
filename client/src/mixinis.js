@@ -6,6 +6,7 @@ import moment from 'moment'
 Vue.mixin({
     data: function () {
         return {
+            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             genderList: [
                 {
                     text: i18n.t('f'),

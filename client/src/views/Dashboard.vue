@@ -117,17 +117,60 @@
                 </v-btn>
             </v-col>
         </v-row>
+        <v-row no-gutters>
+            <v-col class="three-rows dashboard-card-border pa-2 ma-2">
+                <div class="two-columns">
+                    <div>
+                        <v-icon>mdi-chart-line</v-icon>
+                        {{ capitalizeFirst($t('contributionsPerMonth')) }}
+                    </div>
+                </div>
+                <v-divider></v-divider>
+                <graph-line width="100%" :height="300" :shape="'normal'" :axis-min="0" :axis-full-mode="true"
+                            :labels="months" :values="contributionsPerMonth">
+                    <guideline :tooltip-y="true"></guideline>
+                </graph-line>
+            </v-col>
+            <v-col class="three-rows dashboard-card-border pa-2 ma-2">
+                <div class="two-columns">
+                    <div>
+                        <v-icon>mdi-chart-bar</v-icon>
+                        {{ capitalizeFirst($t('usersPerRole')) }}
+                    </div>
+                </div>
+                <v-divider></v-divider>
+                <graph-bar width="100%" :height="300" :shape="'normal'" :axis-min="0" :axis-full-mode="true"
+                           :labels="roles" :values="usersPerRole">
+                    <guideline :tooltip-y="true"></guideline>
+                </graph-bar>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script>
-import { post } from '@/helpers/HTTPHelper'
+import { get, post } from '@/helpers/HTTPHelper'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
     name: 'Dashboard',
+    created: async function () {
+        let result = await get('/statistics/contributions-per-month')
+        if (result.value) {
+            this.contributionsPerMonth = result.data
+        }
+        result = await get('/statistics/users-per-role')
+        if (result.value) {
+            this.roles = result.data.map(i => i.role)
+            this.usersPerRole = result.data.map(i => i.users)
+        }
+    },
     data: function () {
         return {
+            names: ['MS', 'Apple', 'Google'],
+            contributionsPerMonth: [],
+            usersPerRole: [],
+            roles: [],
             isTraining: false,
             file: null,
             lang: null,
