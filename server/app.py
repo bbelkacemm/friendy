@@ -1,5 +1,6 @@
 import shutil
 import json
+import calendar
 
 from pathlib import Path
 from flask import Flask, jsonify, make_response
@@ -518,6 +519,47 @@ def import_data(lang):
             save_data(json.loads(request.data), lang)
             return 'OK', 200
         except Exception as exception:
+            print(exception)
+            return 'Failed', 400
+
+
+# CONTRIBUTIONS PER MONTH STATS
+@app.route('/statistics/contributions-per-month', methods=['GET'])
+def contributions_stats():
+    if request.method == 'GET':
+        try:
+            counts = []
+            year = datetime.datetime.now().year
+            for month in range(1, 13):
+                num_days = calendar.monthrange(year, month)[1]
+                start_date = datetime.datetime(year, month, 1)
+                end_date = datetime.datetime(year, month, num_days)
+
+                results = Contribution.query.filter(
+                    and_(Contribution.created_at >= start_date, Contribution.created_at <= end_date)).all()
+                counts.append(len(results))
+
+            return jsonify(counts), 200
+        except SQLAlchemyError as exception:
+            print(exception)
+            return 'Failed', 400
+
+
+# USERS PER ROLE STATS
+@app.route('/statistics/users-per-role', methods=['GET'])
+def user_stats():
+    if request.method == 'GET':
+        try:
+            stats = []
+            roles = Role.query.filter(Role.label != 'guest').all()
+            for role in roles:
+                users = User.query.filter_by(role_id=role.id).all()
+                stats.append({
+                    'role': role.label,
+                    'users': len(users)
+                })
+            return jsonify(stats), 200
+        except SQLAlchemyError as exception:
             print(exception)
             return 'Failed', 400
 
