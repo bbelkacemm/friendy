@@ -74,10 +74,14 @@ ALTER DATABASE postgres SET datestyle TO "ISO, DMY";
     - [x] Login
     - [x] Sign up (client)
     - [x] Sign up (contributor)
-- [ ] Dashboard
-    - [x] Train model
-    - [x] Display training state
-    - [x] Display last trained model's date
+- [x] Dashboard
+    - [x] Display pending contributions
+    - [x] Display pending contributors
+    - [x] Train model & display model's stats
+    - [x] Import external data
+    - [x] Display contributions per month stats
+    - [x] Display users per role stats
+    - [x] Shortcuts
 - [x] Chatbot
     - [x] Send a message
     - [x] Receive a response with its propositions
