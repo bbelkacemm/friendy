@@ -85,22 +85,22 @@ def initialize_database():
     # INITIALIZE CONTRIBUTIONS
     if database.session.query(Context).count() == 0:
         en = json.loads(open(f'{Path().absolute()}/server/model/data/database_en.json').read())
-        # fr = json.loads(open(f'{Path().absolute()}/model/data/database_fr.json').read())
-        # ar = json.loads(open(f'{Path().absolute()}/model/data/database_ar.json').read())
+        fr = json.loads(open(f'{Path().absolute()}/server/model/data/database_fr.json').read())
+        ar = json.loads(open(f'{Path().absolute()}/server/model/data/database_ar.json').read())
 
         data = [
             {
                 'lang': 'en',
                 'contexts': en
             },
-            # {
-            #     'lang': 'fr',
-            #     'contexts': en
-            # },
-            # {
-            #     'lang': 'ar',
-            #     'contexts': en
-            # },
+            {
+                'lang': 'fr',
+                'contexts': fr
+            },
+            {
+                'lang': 'ar',
+                'contexts': ar
+            },
         ]
 
         for index in reversed(range(len(en))):
@@ -122,7 +122,8 @@ def initialize_database():
                 for code in current_context['to']:
                     c = Context.query.filter_by(code=code).first()
                     if c is not None:
-                        contexts.append(c)
+                        if c not in contexts:
+                            contexts.append(c)
 
             # GET ADMINISTRATOR
             admin = database.session.query(User).filter_by(username='belkacem').first()

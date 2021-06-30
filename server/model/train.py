@@ -82,7 +82,7 @@ def get_label(lang, context):
     return label
 
 
-def train_model(lang, user_id):
+def train_model(lang, folder_name):
     """
     Prepare data,
     save words/classes,
@@ -91,8 +91,6 @@ def train_model(lang, user_id):
 
     :return: None
     """
-
-    folder_name = str(time.time())
 
     # PREPARE DATA
     classes = get_classes(lang=lang)
@@ -140,7 +138,3 @@ def train_model(lang, user_id):
 
     result = model.fit(x=np.array(train_x), y=np.array(train_y), validation_split=.25, batch_size=8, epochs=45, verbose=1)
     model.save(f'{Path().absolute()}/{path}/model_{lang}.h5', result)
-
-    # SAVE MODEL RECORD
-    database.session.add(Model(path=folder_name, user_id=user_id))
-    database.session.commit()

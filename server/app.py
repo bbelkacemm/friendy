@@ -1,6 +1,7 @@
 import shutil
 import json
 import calendar
+import time
 
 from pathlib import Path
 from flask import Flask, jsonify, make_response
@@ -51,14 +52,19 @@ def chat():
 # DASHBOARD
 @app.route('/dashboard/train', methods=['POST'])
 def train():
-    # TODO ADD FR, AR
     data = request.get_json()
 
     user_id = data['user_id']
 
-    languages = ['en']
+    languages = ['en', 'fr', 'ar']
+    folder_name = str(time.time())
     for lang in languages:
-        train_model(lang, user_id)
+        train_model(lang, folder_name)
+
+    # SAVE MODEL RECORD
+    database.session.add(Model(path=folder_name, user_id=user_id))
+    database.session.commit()
+
     return 'trainingCompleted', 200
 
 
@@ -127,6 +133,26 @@ def get_users():
             return make_response(jsonify([x.as_dict() for x in users]), 200)
         except Exception as exception:
             print(exception)
+
+
+# UPDATE USER PROFILE
+@app.route('/users/user/profile/<id>', methods=['POST'])
+def update_profile(id):
+    if request.method == 'POST':
+        data = request.get_json()
+        try:
+            user = User.query.filter_by(id=id).first()
+
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            user.birth_date = data['birth_date']
+            user.gender = data['gender']
+
+            database.session.commit()
+            return user.as_dict(), 200
+        except Exception as exception:
+            print(exception)
+            return 'updateError', 400
 
 
 # SAVE USER

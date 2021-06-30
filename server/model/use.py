@@ -88,7 +88,6 @@ def generate_response(user_input, lang, tag):
     :return: an object containing the response and the recommended prepositions
     """
 
-    #
     m = Model.query.filter_by(state='enabled', tag=tag).first()
 
     if m is None:
