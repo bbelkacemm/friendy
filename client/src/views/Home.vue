@@ -163,7 +163,7 @@ export default {
                 'sender': true,
             })
             const response = await get('/', {
-                'lang': 'en',
+                'lang': this.mainLanguage,
                 'user-input': message,
                 'tag': this.mode.value,
             })

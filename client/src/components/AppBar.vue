@@ -28,6 +28,9 @@
                             </v-list-item-content>
 
                             <v-list-item-action>
+                                <configuration-dialog/>
+                            </v-list-item-action>
+                            <v-list-item-action>
                                 <v-btn icon @click="logout">
                                     <v-icon>mdi-logout</v-icon>
                                 </v-btn>
@@ -54,14 +57,31 @@
         <v-btn @click="signupContributor" plain class="success rounded-pill">
             <span class="mr-2">{{ $t('signupContributor') }}</span>
         </v-btn>
+
+        <v-menu offset-y>
+            <template v-slot:activator="{ attrs, on }">
+                <v-btn text class="rounded-pill" v-bind="attrs" v-on="on">
+                    <v-icon left>mdi-translate</v-icon>
+                    {{ $t('language') }}
+                </v-btn>
+            </template>
+
+            <v-list>
+                <v-list-item v-for="item in languagesList" :key="item.value" link v-on:click="setLanguage(item.value)">
+                    <v-list-item-title v-text="capitalizeFirst(item.text)"></v-list-item-title>
+                </v-list-item>
+            </v-list>
+        </v-menu>
     </v-app-bar>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
+import ConfigurationDialog from '@/components/ConfigurationDialog'
 
 export default {
     name: 'AppBar',
+    components: { ConfigurationDialog },
     data: function () {
         return {
             menu: false,
@@ -84,6 +104,10 @@ export default {
         signupContributor: function () {
             this.$router.push({ name: 'signup', query: { contributor: true } })
         },
+        setLanguage: function (language) {
+            this.$i18n.locale = language
+            this.SET_LANGUAGE(language)
+        },
         ...mapMutations('authentication', ['RESET_AUTHENTICATION_STATE']),
         ...mapMutations('contributions', ['RESET_CONTRIBUTIONS_STATE']),
         ...mapMutations('contexts', ['RESET_CONTEXTS_STATE']),
@@ -93,6 +117,8 @@ export default {
         ...mapMutations('responses', ['RESET_RESPONSES_STATE']),
         ...mapMutations('roles', ['RESET_ROLES_STATE']),
         ...mapMutations('users', ['RESET_USERS_STATE']),
+        ...mapMutations(['SET_LANGUAGE']),
+
     },
 }
 </script>

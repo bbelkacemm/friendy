@@ -15,9 +15,18 @@ import Models from '@/store/modules/Models'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    state: {},
-    mutations: {},
+    state: {
+        mainLanguage: 'en',
+    },
+    mutations: {
+        SET_LANGUAGE: function (state, language) {
+            state.mainLanguage = language
+        },
+    },
     actions: {},
+    getters: {
+        mainLanguage: (state) => state.mainLanguage,
+    },
     modules: {
         authentication: Authentication,
         messages: Messages,

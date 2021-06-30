@@ -9,11 +9,11 @@ Vue.mixin({
             months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             genderList: [
                 {
-                    text: i18n.t('f'),
+                    text: this.capitalizeFirst(i18n.t('f')),
                     value: 'f',
                 },
                 {
-                    text: i18n.t('m'),
+                    text: this.capitalizeFirst(i18n.t('m')),
                     value: 'm',
                 },
             ],
@@ -40,6 +40,7 @@ Vue.mixin({
     },
     computed: {
         ...mapGetters('authentication', ['user']),
+        ...mapGetters(['mainLanguage']),
     },
     methods: {
         formatDate: function (date, hours = false) {

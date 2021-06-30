@@ -20,6 +20,9 @@ export default {
         NavigationDrawer,
         AppBar,
     },
+    created: function () {
+        this.$i18n.locale = this.mainLanguage
+    },
     data: function () {
         return {
             drawer: false,
