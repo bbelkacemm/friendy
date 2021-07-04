@@ -562,9 +562,13 @@ def contributions_stats():
                 end_date = datetime.datetime(year, month, num_days)
 
                 results = Contribution.query.filter(
-                    and_(Contribution.created_at >= start_date, Contribution.created_at <= end_date)).all()
-                counts.append(len(results))
+                    and_(
+                        database.func.date(Contribution.created_at) >= start_date,
+                        database.func.date(Contribution.created_at) <= end_date
+                    )
+                ).all()
 
+                counts.append(len(results))
             return jsonify(counts), 200
         except SQLAlchemyError as exception:
             print(exception)
