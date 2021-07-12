@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/generated/l10n.dart';
 import 'package:mobile/providers/Authentication.dart';
 import 'package:mobile/widgets/InputField.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -55,10 +55,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: InputField(
                     controller: _usernameController,
-                    hint: AppLocalizations.of(context)!.username.toUpperCase(),
+                    hint: S.of(context).username.toUpperCase(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       }
                       return null;
                     },
@@ -69,12 +69,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: InputField(
                     obscureText: true,
                     controller: _passwordController,
-                    hint: AppLocalizations.of(context)!.password.toUpperCase(),
+                    hint: S.of(context).password.toUpperCase(),
                     validator: (value) {
                       if (value == null) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       } else if (value.length < 8) {
-                        return AppLocalizations.of(context)!.passwordLength;
+                        return S.of(context).passwordLength;
                       }
                       return null;
                     },
@@ -85,16 +85,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: InputField(
                     obscureText: true,
                     controller: _confirmPasswordController,
-                    hint: AppLocalizations.of(context)!
-                        .confirmPassword
-                        .toUpperCase(),
+                    hint: S.of(context).confirmPassword.toUpperCase(),
                     validator: (value) {
                       if (value == null) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       } else if (value.length < 8) {
-                        return AppLocalizations.of(context)!.passwordLength;
+                        return S.of(context).passwordLength;
                       } else if (value != _passwordController.text) {
-                        return AppLocalizations.of(context)!.passwordMatch;
+                        return S.of(context).passwordMatch;
                       }
                       return null;
                     },
@@ -104,10 +102,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: InputField(
                     controller: _firstNameController,
-                    hint: AppLocalizations.of(context)!.firstName.toUpperCase(),
+                    hint: S.of(context).firstName.toUpperCase(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       }
                       return null;
                     },
@@ -117,10 +115,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: InputField(
                     controller: _lastNameController,
-                    hint: AppLocalizations.of(context)!.lastName.toUpperCase(),
+                    hint: S.of(context).lastName.toUpperCase(),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       }
                       return null;
                     },
@@ -131,14 +129,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: InputField(
                     readOnly: true,
                     controller: _birthdateController,
-                    hint: AppLocalizations.of(context)!.birthdate.toUpperCase(),
+                    hint: S.of(context).birthdate.toUpperCase(),
                     icon: Icons.calendar_today,
                     onPressed: () {
                       _selectDate(context);
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return AppLocalizations.of(context)!.requiredField;
+                        return S.of(context).requiredField;
                       }
                       return null;
                     },
@@ -198,7 +196,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                           child: Text(
-                            AppLocalizations.of(context)!.clear.toUpperCase(),
+                            S.of(context).clear.toUpperCase(),
                             style: TextStyle(
                               color: Colors.grey,
                             ),
@@ -233,9 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               }
                             },
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .signup
-                                  .toUpperCase(),
+                              S.of(context).signup.toUpperCase(),
                             ),
                           ),
                         ),

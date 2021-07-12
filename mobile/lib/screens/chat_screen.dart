@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:mobile/generated/l10n.dart';
 import 'package:mobile/providers/Authentication.dart';
 import 'package:mobile/providers/Chat.dart';
+import 'package:mobile/providers/Configurations.dart';
 import 'package:mobile/widgets/ChatItem.dart';
 import 'package:mobile/widgets/InputField.dart';
 import 'package:mobile/widgets/PropositionItem.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/helpers/main.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -20,17 +23,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
   late Chat _chat;
   late Authentication _authentication;
+  late Configurations _configurations;
 
   @override
   void initState() {
-    _chat = Provider.of<Chat>(
-      context,
-      listen: false,
-    );
-    _authentication = Provider.of<Authentication>(
-      context,
-      listen: false,
-    );
+    _chat = Provider.of<Chat>(context, listen: false);
+    _authentication = Provider.of<Authentication>(context, listen: false);
+    _configurations = Provider.of<Configurations>(context, listen: false);
     super.initState();
   }
 
@@ -44,6 +43,16 @@ class _ChatScreenState extends State<ChatScreen> {
             style: TextStyle(color: Colors.blueAccent),
           ),
           actions: [
+            IconButton(
+              onPressed: () {
+                displayLanguageSwitch();
+              },
+              icon: Icon(
+                Icons.translate,
+                color: Colors.black,
+              ),
+              splashRadius: 20,
+            ),
             IconButton(
               onPressed: displayProfile,
               icon: CircleAvatar(
@@ -87,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
               Container(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: InputField(
-                  hint: 'What\'s on your mind?',
+                  hint: S.of(context).messageHint.capitalize(),
                   icon: Icons.send,
                   onPressed: sendMessage,
                   controller: _messageController,
@@ -130,9 +139,54 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void displayLanguageSwitch() {
+    var languages = [
+      {
+        'text': S.of(context).en.capitalize(),
+        'value': 'en',
+      },
+      {
+        'text': S.of(context).fr.capitalize(),
+        'value': 'fr',
+      },
+      {
+        'text': S.of(context).ar.capitalize(),
+        'value': 'ar',
+      },
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      builder: (_) {
+        return Container(
+          height: 200,
+          child: ListView(
+            padding: const EdgeInsets.all(8),
+            children: <Widget>[
+              for (var lang in languages)
+                ListTile(
+                  title: Text(lang['text'].toString()),
+                  onTap: () {
+                    setState(() {
+                      S.load(Locale(lang['value']!));
+                    });
+                    _configurations.setLanguage(lang['value']);
+                    Navigator.pop(context);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+      barrierColor: Colors.black.withAlpha(16),
+    );
+  }
+
   void displayProfile() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       builder: (_) {
         return Container(
           height: 150,
