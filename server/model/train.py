@@ -128,13 +128,19 @@ def train_model(lang, folder_name):
     pickle.dump(classes, open(f'{Path().absolute()}/{path}/classes_{lang}.pkl', 'wb'))
 
     # CREATE/TRAIN/SAVE MODEL
+    start = time.monotonic()
     model = Sequential()
-    model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
-    model.add(Dropout(.3))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dropout(.3))
-    model.add(Dense(len(train_y[0]), activation='softmax'))
-    model.compile(loss=BinaryCrossentropy(), optimizer=Nadam(learning_rate=0.01), metrics=['accuracy'])
 
-    result = model.fit(x=np.array(train_x), y=np.array(train_y), validation_split=.25, batch_size=8, epochs=45, verbose=1)
+    model.add(Dense(128, input_shape=(len(train_x[0]),)))
+    model.add(Dropout(.8))
+    model.add(Dense(512, activation='relu'))
+    model.add(Dropout(.8))
+    model.add(Dense(len(train_y[0]), activation='softmax'))
+
+    model.compile(loss=BinaryCrossentropy(), optimizer=Nadam(learning_rate=0.001), metrics=['accuracy'])
+    result = model.fit(x=np.array(train_x), y=np.array(train_y), validation_split=.10, batch_size=32, epochs=750,
+                       verbose=0, shuffle=True)
+
+    print(time.monotonic() - start)
+
     model.save(f'{Path().absolute()}/{path}/model_{lang}.h5', result)
