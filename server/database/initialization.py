@@ -104,10 +104,16 @@ def initialize_database():
         ]
 
         for index in reversed(range(len(en))):
+            contribution = dict()
             context = dict()
             patterns = []
             responses = []
             contexts = []
+
+            contribution['title'] = data[0]['contexts'][index]['title']
+            contribution['description'] = data[0]['contexts'][index]['description']
+            contribution['date'] = data[0]['contexts'][index]['date']
+
             for collection in data:
                 current_context = collection['contexts'][index]
                 context['code'] = current_context['code']
@@ -129,11 +135,13 @@ def initialize_database():
             admin = database.session.query(User).filter_by(username='belkacem').first()
             # SAVE CONTRIBUTION
             contribution = Contribution(
-                title='NO TITLE',
+                title=contribution['title'],
+                description=contribution['description'],
                 status='valid',
                 contributor_id=admin.id,
                 validator_id=admin.id,
-                validated_at=datetime.datetime.utcnow(),
+                created_at=datetime.datetime.strptime(contribution['date'], '%Y-%m-%d'),
+                validated_at=datetime.datetime.strptime(contribution['date'], '%Y-%m-%d'),
                 context=Context(
                     code=context['code'],
                     label_en=context['label_en'] if 'label_en' in context else None,
