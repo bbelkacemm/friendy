@@ -41,6 +41,7 @@
                       :items-per-page="14"
                       v-model="selectedUsers"
                       :search="search"
+                      :sort-by="['role.label', 'firstName']"
                       show-select
                       single-select
                       class="elevation-0">

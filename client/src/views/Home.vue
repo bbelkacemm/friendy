@@ -28,7 +28,7 @@
             </div>
             <v-form v-on:submit.prevent="" ref="form" class="ma-2 input-grid">
                 <div>
-                    <v-text-field v-model="message" hide-details="true" dense solo flat background-color="transparent"
+                    <v-text-field v-model="message" :label="capitalizeFirst($t('messageHint'))" hide-details="true" dense solo flat background-color="transparent"
                                   outline="false"></v-text-field>
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default {
         send: async function (message) {
             this.isTyping = true
             this.addMessage({
-                'value': message,
+                'value': this.capitalizeFirst(message),
                 'sender': true,
             })
             const response = await get('/', {
@@ -169,7 +169,7 @@ export default {
             })
             if (response.value) {
                 this.addMessage({
-                    'value': response.data.response,
+                    'value': this.capitalizeFirst(response.data.response),
                 })
                 this.setPropositions(response.data.propositions)
             } else {

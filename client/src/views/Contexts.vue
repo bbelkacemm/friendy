@@ -45,31 +45,31 @@ export default {
         return {
             headers: [
                 {
-                    text: this.$t('code'),
+                    text: this.$t('code').toUpperCase(),
                     value: 'code',
                 },
                 {
-                    text: this.$t('labelEn'),
+                    text: this.$t('labelEn').toUpperCase(),
                     value: 'labelEn',
                 },
                 {
-                    text: this.$t('labelFr'),
+                    text: this.$t('labelFr').toUpperCase(),
                     value: 'labelFr',
                 },
                 {
-                    text: this.$t('labelAr'),
+                    text: this.$t('labelAr').toUpperCase(),
                     value: 'labelAr',
                 },
                 {
-                    text: this.$t('propositionLabelEn'),
+                    text: this.$t('propositionLabelEn').toUpperCase(),
                     value: 'propositionEn',
                 },
                 {
-                    text: this.$t('propositionLabelFr'),
+                    text: this.$t('propositionLabelFr').toUpperCase(),
                     value: 'propositionFr',
                 },
                 {
-                    text: this.$t('propositionLabelAr'),
+                    text: this.$t('propositionLabelAr').toUpperCase(),
                     value: 'propositionAr',
                 },
             ],
@@ -84,8 +84,8 @@ export default {
     methods: {
         clearSelection: function () {
             this.selectedContexts = []
-        }
-    }
+        },
+    },
 }
 </script>
 

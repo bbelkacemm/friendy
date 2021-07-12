@@ -2,6 +2,12 @@
     <v-app-bar app elevation="0" color="white" v-if="user">
         <v-app-bar-nav-icon v-if="hasPrivilegesOf('contributor')" @click="$emit('clicked')"></v-app-bar-nav-icon>
 
+        <logo width="48"/>
+
+        <div class="ms-4" style="font-family: 'Staatliches'; font-size: x-large; line-height: 0">
+            Friendy
+        </div>
+
         <v-spacer></v-spacer>
         <div>
             <v-menu v-model="menu"
@@ -42,7 +48,11 @@
         </div>
     </v-app-bar>
     <v-app-bar v-else app elevation="0" color="white">
-        <v-app-bar-title>Friendy</v-app-bar-title>
+        <logo width="48"/>
+
+        <div class="ms-4" style="font-family: 'Staatliches'; font-size: x-large; line-height: 0">
+            Friendy
+        </div>
 
         <v-btn to="home" plain text class="ms-4 rounded-pill">
             {{ $t('home') }}
@@ -55,7 +65,7 @@
         </v-btn>
 
         <v-btn @click="signupContributor" plain class="success rounded-pill">
-            <span class="mr-2">{{ $t('signupContributor') }}</span>
+            {{ $t('signupContributor') }}
         </v-btn>
 
         <v-menu offset-y>
@@ -78,10 +88,11 @@
 <script>
 import { mapMutations } from 'vuex'
 import ConfigurationDialog from '@/components/ConfigurationDialog'
+import Logo from '@/assets/logo.svg'
 
 export default {
     name: 'AppBar',
-    components: { ConfigurationDialog },
+    components: { ConfigurationDialog, Logo },
     data: function () {
         return {
             menu: false,
@@ -106,6 +117,7 @@ export default {
         },
         setLanguage: function (language) {
             this.$i18n.locale = language
+            this.$vuetify.rtl = language === 'ar';
             this.SET_LANGUAGE(language)
         },
         ...mapMutations('authentication', ['RESET_AUTHENTICATION_STATE']),

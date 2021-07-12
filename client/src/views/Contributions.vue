@@ -51,9 +51,12 @@
                 </v-container>
             </template>
 
+            <template v-slot:item.title="{item}">
+                {{ capitalizeFirst(item.title) }}
+            </template>
             <template v-slot:item.description="{item}">
                 <div v-if="item.description">
-                    {{ item.description }}
+                    {{ capitalizeFirst(item.description) }}
                 </div>
                 <v-icon v-else>mdi-minus</v-icon>
             </template>

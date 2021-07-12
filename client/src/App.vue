@@ -22,6 +22,7 @@ export default {
     },
     created: function () {
         this.$i18n.locale = this.mainLanguage
+        this.$vuetify.rtl = this.mainLanguage === 'ar';
     },
     data: function () {
         return {

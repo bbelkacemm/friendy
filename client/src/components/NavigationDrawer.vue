@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer app hide-overlay v-model="drawer">
+    <v-navigation-drawer app hide-overlay v-model="drawer" :right="$vuetify.rtl">
         <v-list nav dense>
             <v-list-item-group>
                 <v-list-item to="home">

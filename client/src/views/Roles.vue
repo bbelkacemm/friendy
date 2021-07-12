@@ -36,6 +36,9 @@
                     </v-text-field>
                 </v-container>
             </template>
+            <template v-slot:item.label="{item}">
+                {{ capitalizeFirst($t(item.label)) }}
+            </template>
         </v-data-table>
     </v-container>
 </template>

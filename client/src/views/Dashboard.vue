@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="pa-4">
+    <v-container fluid class="pa-4 fill-height">
         <v-row no-gutters>
             <!-- PENDING CONTRIBUTORS -->
             <v-col class="dashboard-card-border three-rows pa-2 ma-2">
@@ -54,7 +54,7 @@
                 <div class="two-columns">
                     <div>
                         <v-icon>mdi-database</v-icon>
-                        {{ $t('importData') }}
+                        {{ capitalizeFirst($t('importData')) }}
                     </div>
                     <v-btn to="contexts" target="_blank" color="success" tile plain text>
                         {{ $t('contexts') }}
@@ -104,7 +104,7 @@
                             {{ $t('noModel') }}
                         </div>
                         <div v-else>
-                            {{ $t('lastTrain') }}
+                            {{ capitalizeFirst($t('lastTrain')) }}
                             {{ formatDate(models[models.length - 1]['createdAt'], true).toUpperCase() }}
                         </div>
                     </div>
@@ -126,10 +126,7 @@
                     </div>
                 </div>
                 <v-divider></v-divider>
-                <graph-line width="100%" :height="300" :shape="'normal'" :axis-min="0" :axis-full-mode="true"
-                            :labels="months" :values="contributionsPerMonth">
-                    <guideline :tooltip-y="true"></guideline>
-                </graph-line>
+                <line-chart :chart-data="contributionsStats.data" :options="contributionsStats.options"/>
             </v-col>
             <v-col class="three-rows dashboard-card-border pa-2 ma-2">
                 <div class="two-columns">
@@ -139,10 +136,7 @@
                     </div>
                 </div>
                 <v-divider></v-divider>
-                <graph-bar width="100%" :height="300" :shape="'normal'" :axis-min="0" :axis-full-mode="true"
-                           :labels="roles" :values="usersPerRole">
-                    <guideline :tooltip-y="true"></guideline>
-                </graph-bar>
+                <bar-chart :chart-data="usersStats.data" :options="usersStats.options"/>
             </v-col>
         </v-row>
     </v-container>
@@ -151,9 +145,12 @@
 <script>
 import { get, post } from '@/helpers/HTTPHelper'
 import { mapActions, mapGetters } from 'vuex'
+import LineChart from '@/components/charts/LineChart'
+import BarChart from '@/components/charts/BarChart'
 
 export default {
     name: 'Dashboard',
+    components: { BarChart, LineChart },
     created: async function () {
         let result = await get('/statistics/contributions-per-month')
         if (result.value) {
@@ -161,13 +158,12 @@ export default {
         }
         result = await get('/statistics/users-per-role')
         if (result.value) {
-            this.roles = result.data.map(i => i.role)
+            this.roles = result.data.map(i => this.capitalizeFirst(i.role))
             this.usersPerRole = result.data.map(i => i.users)
         }
     },
     data: function () {
         return {
-            names: ['MS', 'Apple', 'Google'],
             contributionsPerMonth: [],
             usersPerRole: [],
             roles: [],
@@ -205,6 +201,72 @@ export default {
         }
     },
     computed: {
+        contributionsStats: function () {
+            return {
+                data: {
+                    labels: this.months,
+                    datasets: [
+                        {
+                            backgroundColor: 'transparent',
+                            borderColor: 'rgba(1, 116, 188, 0.50)',
+                            pointBackgroundColor: '#000',
+                            data: this.contributionsPerMonth,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                precision: 0,
+                            },
+                        }],
+                    },
+                    title: {
+                        display: true,
+                        text: this.capitalizeFirst(this.$t('contributionsPerMonth')),
+                    },
+                },
+            }
+        },
+        usersStats: function () {
+            return {
+                data: {
+                    labels: this.roles,
+                    datasets: [
+                        {
+                            backgroundColor: 'rgba(1, 116, 188, 0.50)',
+                            data: this.usersPerRole,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                precision: 0,
+                            },
+                        }],
+                    },
+                    title: {
+                        display: true,
+                        text: this.capitalizeFirst(this.$t('usersPerRole')),
+                    },
+                },
+            }
+        },
         ...mapGetters('models', ['models']),
         ...mapGetters('users', ['pendingContributors']),
         ...mapGetters('contributions', ['pendingContributions']),
