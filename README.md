@@ -1,28 +1,32 @@
-# Chatbot for autistic children
+# Friendy: a chatbot for autistic children!
 
 ## Introduction
 
+Friendy is a platform that provides an intelligent **chatbot** for autistic children to prevent them from **depression**. Solving this problem is a bit tricky because of the data it requires. The data must be collected and verified by professionals. So we have created a portal where they can contribute to the dataset making the chatbot more robust.
+
 ## Prerequisites
 
-You need to install first anaconda, npm and optionally docker
+* Anaconda.
+* NPM.
+* Docker (Optional).
 
-## How to use?
+## Development
 
-1. Create a conda environment using the file **environment.yml**
+1. Create a conda environment using the file **environment.yml** using the following commands:
 
 ```shell
 cd server
 conda env create environment.yml
 ```
 
-2. Prepare and launch database container
+2. Prepare and launch database container using the following commands:
 
 ```shell
 docker pull postgres
 docker container run --name pfe -d -p 5432:5432 -e POSTGRES_PASSWORD=1234 postgres
 ```
 
-3. Download nltk data
+3. Download nltk data:
 
 ```python
 import nltk
@@ -32,7 +36,7 @@ import nltk
 nltk.download()
 ```
 
-4. Launch the server
+4. Launch the server using the following command:
 
 ```shell
 # if you are on macos replace set with export
@@ -40,14 +44,14 @@ nltk.download()
 set FLASK_DEBUG=0 && set FLASK_APP=server/app.py && python -m flask run
 ```
 
-5. Launch the client (web)
+5. Launch the client (web) using the following commands:
 
 ```shell
 cd client
 npm run serve
 ```
 
-6. Train the model from the dashboard view
+6. Train the model from the dashboard page.
 
 ## Notes
 
@@ -55,75 +59,3 @@ npm run serve
 ```sql
 ALTER DATABASE postgres SET datestyle TO "ISO, DMY";
 ```
-
-## Features
-
-### Server
-
-- [x] Neural Network model
-    - [x] Train
-    - [x] Predict a context
-- [x] Data initialization
-    - [x] Users initialization
-    - [x] Roles & permissions initialization
-    - [x] Training data initialization
-
-### Client (Web)
-
-- [x] Authentication
-    - [x] Login
-    - [x] Sign up (client)
-    - [x] Sign up (contributor)
-- [x] Dashboard
-    - [x] Display pending contributions
-    - [x] Display pending contributors
-    - [x] Train model & display model's stats
-    - [x] Import external data
-    - [x] Display contributions per month stats
-    - [x] Display users per role stats
-    - [x] Shortcuts
-- [x] Chatbot
-    - [x] Send a message
-    - [x] Receive a response with its propositions
-- [x] Contributions
-    - [x] Display contributions
-    - [x] Search for a contribution
-    - [x] Add contribution
-    - [x] Edit contribution
-    - [x] Delete contribution
-    - [x] Validate contribution
-- [x] Neural Network Models
-    - [x] Display models
-    - [x] Edit model's state (enabled or disabled)
-    - [x] Edit model's tag (used in development or in production)
-    - [x] Delete model  (both files and database record)
-    - [x] Choose which mode to use in the chatbot
-- [x] Contexts
-    - [x] Display valid contexts
-    - [x] Display details of a context 
-    - [x] Search for a context
-- [x] Users
-    - [x] Display users
-    - [x] Search for a user
-    - [x] Add user
-    - [x] Edit user
-    - [x] Delete user
-    - [x] Validate/Invalidate user
-- [x] Roles & Permissions
-    - [x] Display roles/permissions
-    - [x] Search for a role
-    - [x] Add role/permission
-    - [x] Edit role/permission
-    - [x] Delete role/permission
-- [ ] Security
-    - [x] Protect routes
-
-### Client (mobile)
-
-- [x] Authentication
-    - [x] Login / Logout
-    - [x] Sign up
-    - [x] Guest mode
-- [x] Chatbot
-    - [x] Send a message
-    - [x] Receive a response with its propositions
